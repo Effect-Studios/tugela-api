@@ -1,0 +1,15 @@
+runtime: python39
+
+handlers:
+  - url: /static
+    static_dir: staticfiles/
+
+  - url: .*
+    script: auto
+    secure: always
+
+env_variables:
+  DATABASE_URL: ""
+  DJANGO_SECRET_KEY: ""
+  DJANGO_SETTINGS_MODULE: "config.settings.production"
+  DJANGO_GCP_STORAGE_BUCKET_NAME: ""
