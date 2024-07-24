@@ -33,13 +33,13 @@ class TestUserView:
     def test_user_update(self, api_client_auth, user: User):
         url = reverse("api:users-detail", args=(user.id,))
         client = api_client_auth(user)
-        data = {"email": "a@a.com", "name": "Hello World"}
+        data = {"email": "a@a.com", "username": "Hello World"}
 
         resp = client.patch(url, data=data)
         resp_data = resp.json()
 
         assert resp.status_code == status.HTTP_200_OK
-        assert resp_data["name"] == data["name"]
+        assert resp_data["username"] == data["username"]
         assert resp_data["email"] == data["email"]
 
     def test_me(
@@ -80,7 +80,7 @@ class TestAuthView:
         url = reverse("api:signup")
         data = {
             "email": test_email,
-            "name": "test_name",
+            "username": "test_name",
             "password": test_password,
             "password2": test_password,
         }
@@ -165,3 +165,90 @@ class TestAuthView:
 
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
         assert "Invalid token" in resp_data
+
+
+class TestAddress:
+    def test_list_address(self, api_client_auth, admin_user, address_factory):
+        url = reverse("api:address-list")
+        address_factory.create_batch(3)
+
+        client = api_client_auth(user=admin_user)
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp_data["results"]) == 3
+
+    def test_create_address(self, api_client_auth, user):
+        url = reverse("api:address-list")
+        client = api_client_auth(user=user)
+        data = {
+            "user": user.id,
+            "address_name": "Home address",
+            "address": "addres location",
+        }
+
+        resp = client.post(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_201_CREATED
+        assert resp_data["address_name"] == data["address_name"]
+
+    def test_update_address(self, api_client_auth, admin_user, address_factory):
+        address = address_factory()
+        url = reverse("api:address-detail", args=(address.id,))
+        data = {"address_name": "Updated name"}
+
+        client = api_client_auth(user=admin_user)
+        resp = client.patch(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["address_name"] == data["address_name"]
+
+    def test_read_address(self, api_client_auth, admin_user, address_factory):
+        address = address_factory()
+        url = reverse("api:address-detail", args=(address.id,))
+
+        client = api_client_auth(user=admin_user)
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["address_name"] == address.address_name
+
+
+class TestProfile:
+    def test_list_profile(self, api_client_auth, admin_user, user):
+        url = reverse("api:profile-list")
+
+        client = api_client_auth(user=admin_user)
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp_data["results"]) == 2
+
+    def test_update_profile(self, api_client_auth, admin_user, user):
+        url = reverse("api:profile-detail", args=(user.profile.id,))
+        client = api_client_auth(user=admin_user)
+        data = {"gender": "f"}
+
+        resp = client.patch(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["gender"] == data["gender"]
+
+    def test_read_profile(self, api_client_auth, user):
+        url = reverse("api:profile-detail", args=(user.profile.id,))
+
+        client = api_client_auth(user=user)
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["user"] == str(user.id)

@@ -6,6 +6,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from apps.common.email import send_email
 from apps.common.utils import OTPUtils
 
+from .models import Address, Profile
+
 User = get_user_model()
 
 
@@ -19,7 +21,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "email", "name", "password", "password2"]
+        fields = ["id", "email", "username", "password", "password2"]
 
     # Check if passwords match
     def validate_password2(self, password2: str):
@@ -38,7 +40,7 @@ class SignupResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "name", "email", "token")
+        fields = ("id", "username", "email", "token")
 
     @swagger_serializer_method(
         serializer_or_field=serializers.JSONField(),
@@ -51,7 +53,8 @@ class SignupResponseSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "name", "id"]
+        fields = ["email", "username", "account_type", "role", "id"]
+        read_only_fields = ["role", "account_type"]
 
 
 class ForgotPasswordSerializer(serializers.Serializer):
@@ -132,3 +135,35 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return {"old_password": "", "new_password": ""}
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = "__all__"
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    email = serializers.SerializerMethodField()
+    address_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Profile
+        fields = (
+            "id",
+            "user",
+            "first_name",
+            "last_name",
+            "email",
+            "address_name",
+            "gender",
+            "dob",
+            "phone_number",
+            "profile_image",
+        )
+
+    def get_email(self, profile) -> str:
+        return profile.user.email if profile.user else ""
+
+    def get_address_name(self, profile) -> str:
+        return profile.address.address_name if profile.address else ""

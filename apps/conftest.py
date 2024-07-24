@@ -4,9 +4,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.common.utils import OTPUtils
 from apps.users.models import User
-from apps.users.tests.factories import UserFactory
+from apps.users.tests.factories import AddressFactory, ProfileFactory, UserFactory
 
 register(UserFactory)
+register(AddressFactory)
+register(ProfileFactory)
 
 
 @pytest.fixture(autouse=True)

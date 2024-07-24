@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.users.forms import UserChangeForm, UserCreationForm
 
+from .models import Address, Profile
+
 User = get_user_model()
 
 
@@ -18,8 +20,10 @@ class UserAdmin(auth_admin.UserAdmin):
             _("Personal info"),
             {
                 "fields": (
-                    "name",
+                    "username",
                     "email",
+                    "roles",
+                    "account_type",
                 )
             },
         ),
@@ -46,7 +50,11 @@ class UserAdmin(auth_admin.UserAdmin):
         (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
     )
 
-    list_display = ["name", "email", "is_superuser"]
-    list_display_links = ["name", "email"]
-    search_fields = ["name"]
+    list_display = ["username", "email", "account_type", "role", "is_superuser"]
+    list_display_links = ["username", "email"]
+    search_fields = ["username", "role", "email", "account_type", "id"]
     ordering = ("email",)
+
+
+admin.site.register(Profile)
+admin.site.register(Address)
