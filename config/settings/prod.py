@@ -56,6 +56,10 @@ GS_DEFAULT_ACL = "publicRead"
 GS_EXPIRATION = timedelta(days=7)
 # Reduce default storage chunck size to stop memory blowups in app engine to 8MB from Default 100MB
 GS_BLOB_CHUNK_SIZE = 8 * 1024 * 1024  # 8MB
+GS_EXPIRATION = timedelta(days=7)
+# Reduce default storage chunck size to stop memory blowups in app engine to 8MB from Default 100MB
+# https://github.com/googleapis/python-storage/blob/b91e57d6ca314ac4feaec30bf355fcf7ac4468c0/google/cloud/storage/blob.py#L124
+GS_BLOB_CHUNK_SIZE = 8 * 1024 * 1024  # 8MB
 
 # STATIC
 # ------------------------
@@ -67,10 +71,10 @@ STATIC_ROOT = "static"
 
 # MEDIA
 # ------------------------------------------------------------------------------
-# DEFAULT_FILE_STORAGE = "apps.utils.storages.MediaRootGoogleCloudStorage"
-# MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
+DEFAULT_FILE_STORAGE = "apps.utils.storages.MediaRootGoogleCloudStorage"
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
 
-MEDIA_URL = "/media/"
+# MEDIA_URL = "/media/"
 
 CLOUDINARY_KEY = env("CLOUDINARY_KEY", default="")
 CLOUDINARY_SECRET = env("CLOUDINARY_SECRET", default="")
@@ -82,16 +86,16 @@ CLOUDINARY_STORAGE = {
     "API_KEY": CLOUDINARY_KEY,
 }
 
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    },
-    "staticfiles": {
-        # Leave whatever setting you already have here, e.g.:
-        # "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+#     },
+#     "staticfiles": {
+#         # Leave whatever setting you already have here, e.g.:
+#         # "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 
 
 # TEMPLATES
