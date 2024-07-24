@@ -10,15 +10,19 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from .models import Address, Profile
+from apps.common.permissions import IsAdmin
+
+from .models import Address, Category, Profile, Skill
 from .serializers import (
     AddressSerializer,
+    CategorySerializer,
     ChangePasswordSerializer,
     ForgotPasswordSerializer,
     ProfileSerializer,
     ResetPasswordSerializer,
     SignupResponseSerializer,
     SignUpSerializer,
+    SkillSerializer,
     UserSerializer,
 )
 
@@ -143,3 +147,31 @@ class ProfileView(ModelViewSet):
         if user.is_staff:
             return self.queryset
         return self.queryset.filter(user=user)
+
+
+class CategoryView(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    search_fields = ("name",)
+    permission_classes = [AllowAny]
+
+    http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
+
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            self.permission_classes = [IsAdmin]
+        return super().get_permissions()
+
+
+class SkillView(ModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+    search_fields = ("name",)
+    permission_classes = [AllowAny]
+
+    http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
+
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            self.permission_classes = [IsAdmin]
+        return super().get_permissions()

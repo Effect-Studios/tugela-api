@@ -30,3 +30,25 @@ class BaseModel(models.Model):
         if self.is_active:
             self.is_active = False
             self.save(update_fields=["is_active", "updated_at"] if self.pk else None)
+
+
+class HowYouFoundUs(models.TextChoices):
+    FACEBOOK = "facebook", _("Facebook")
+    TWITTER = "twitter", _("Twitter")
+    INSTAGRAM = "instagram", _("Instagram")
+    YOUTUBE = "youtube", _("Youtube")
+    TECH_EVENT = "tech_event", _("Tech Event")
+    AFRIBLOCK_MEMBER = "afriblock_member", _("AfriBlock Member")
+    AFRIBLOCK_EMPLOYEE = "afriblock_employee", _("AfriBlock Employee")
+    OTHER = "other", _("Other")
+
+
+class Currency(models.TextChoices):
+    USD = "USD", _("U.S Dollar")
+    GHS = "GHS", _("Cedi")
+    GBP = "GBP", _("British Pound")
+    NGN = "NGN", _("Naira")
+    KES = "KES", _("Kenyan shilling")
+    ZAR = "ZAR", _("South African Rand")
+    EUR = "EUR", _("Euro")
+    CAD = "CAD", _("Canadian Dollar")

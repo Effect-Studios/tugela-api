@@ -15,3 +15,12 @@ class IsOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user if check_auth(request) else False
+
+
+class IsAdmin(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        return check_auth(request) and user.role == User.Roles.ADMIN
+
+    def has_object_permission(self, request, view, obj):
+        return check_auth(request) and request.user.role == User.Roles.ADMIN

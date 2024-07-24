@@ -4,11 +4,19 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.common.utils import OTPUtils
 from apps.users.models import User
-from apps.users.tests.factories import AddressFactory, ProfileFactory, UserFactory
+from apps.users.tests.factories import (
+    AddressFactory,
+    CategoryFactory,
+    ProfileFactory,
+    SkillFactory,
+    UserFactory,
+)
 
 register(UserFactory)
 register(AddressFactory)
 register(ProfileFactory)
+register(SkillFactory)
+register(CategoryFactory)
 
 
 @pytest.fixture(autouse=True)
@@ -29,6 +37,26 @@ def test_password():
 @pytest.fixture
 def user(test_password) -> User:
     return UserFactory(password=test_password)
+
+
+@pytest.fixture
+def admin(test_password) -> User:
+    return UserFactory(password=test_password, role="admin")
+
+
+@pytest.fixture
+def manage(test_password) -> User:
+    return UserFactory(password=test_password, role="manager")
+
+
+@pytest.fixture
+def freelancer_user(test_password) -> User:
+    return UserFactory(password=test_password, account_type="freelancer")
+
+
+@pytest.fixture
+def company_user(test_password) -> User:
+    return UserFactory(password=test_password, account_type="company")
 
 
 @pytest.fixture

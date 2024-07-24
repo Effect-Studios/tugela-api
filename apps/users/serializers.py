@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from apps.common.email import send_email
 from apps.common.utils import OTPUtils
 
-from .models import Address, Profile
+from .models import Address, Category, Profile, Skill
 
 User = get_user_model()
 
@@ -167,3 +167,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_address_name(self, profile) -> str:
         return profile.address.address_name if profile.address else ""
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ["id", "name", "created_at", "updated_at"]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name", "created_at", "updated_at"]

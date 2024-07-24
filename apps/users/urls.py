@@ -4,11 +4,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .views import (
     AddressView,
+    CategoryView,
     ChangePasswordView,
     ForgotPasswordView,
     ProfileView,
     ResetPasswordView,
     SignUpView,
+    SkillView,
     UserView,
 )
 
@@ -17,6 +19,8 @@ router = DefaultRouter()
 router.register("users", UserView, basename="users")
 router.register("profile", ProfileView, basename="profile")
 router.register("address", AddressView, basename="address")
+router.register("category", CategoryView, basename="category")
+router.register("skill", SkillView, basename="skill")
 
 
 urlpatterns = [

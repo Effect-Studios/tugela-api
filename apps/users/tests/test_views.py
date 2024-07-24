@@ -252,3 +252,101 @@ class TestProfile:
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["user"] == str(user.id)
+
+
+class TestCategory:
+    def test_list_category(self, api_client, category_factory):
+        url = reverse("api:category-list")
+        category_factory.create_batch(3)
+
+        client = api_client
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp_data["results"]) == 3
+
+    def test_create_category(self, api_client_auth, admin):
+        url = reverse("api:category-list")
+        client = api_client_auth(user=admin)
+        data = {"name": "Test Category"}
+
+        resp = client.post(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_201_CREATED
+        assert resp_data["name"] == data["name"]
+
+    def test_update_category(self, api_client_auth, admin, category_factory):
+        category = category_factory()
+        url = reverse("api:category-detail", args=(category.id,))
+        client = api_client_auth(user=admin)
+        data = {"name": "Updated Category"}
+
+        resp = client.patch(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["name"] == data["name"]
+
+    def test_read_category(self, api_client, category_factory):
+        category = category_factory()
+        url = reverse("api:category-detail", args=(category.id,))
+
+        client = api_client
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["id"] == str(category.id)
+
+
+class TestSkill:
+    def test_list_skill(self, api_client, skill_factory):
+        url = reverse("api:skill-list")
+        skill_factory.create_batch(3)
+
+        client = api_client
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp_data["results"]) == 3
+
+    def test_create_skill(self, api_client_auth, admin):
+        url = reverse("api:skill-list")
+        client = api_client_auth(user=admin)
+        data = {"name": "Test Skill"}
+
+        resp = client.post(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_201_CREATED
+        assert resp_data["name"] == data["name"]
+
+    def test_update_skill(self, api_client_auth, admin, skill_factory):
+        skill = skill_factory()
+        url = reverse("api:skill-detail", args=(skill.id,))
+        client = api_client_auth(user=admin)
+        data = {"name": "Updated Skill"}
+
+        resp = client.patch(url, data=data)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["name"] == data["name"]
+
+    def test_read_skill(self, api_client, skill_factory):
+        skill = skill_factory()
+        url = reverse("api:skill-detail", args=(skill.id,))
+
+        client = api_client
+
+        resp = client.get(url)
+        resp_data = resp.json()
+
+        assert resp.status_code == status.HTTP_200_OK
+        assert resp_data["id"] == str(skill.id)

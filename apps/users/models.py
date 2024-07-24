@@ -129,6 +129,20 @@ class Profile(base_models.BaseModel):
         return f"{self.user.username}'s profile"
 
 
+class Category(base_models.BaseModel):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Skill(base_models.BaseModel):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 # SIGNALS
 # ---------------------------------------------------
 @receiver(models.signals.post_save, sender=User)

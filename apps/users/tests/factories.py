@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from factory import Faker, post_generation
 from factory.django import DjangoModelFactory
 
-from apps.users.models import Address, Profile
+from apps.users.models import Address, Category, Profile, Skill
 
 
 class UserFactory(DjangoModelFactory):
@@ -46,3 +46,17 @@ class ProfileFactory(DjangoModelFactory):
 
     class Meta:
         model = Profile
+
+
+class CategoryFactory(DjangoModelFactory):
+    name = Faker("name")
+
+    class Meta:
+        model = Category
+
+
+class SkillFactory(DjangoModelFactory):
+    name = Faker("name")
+
+    class Meta:
+        model = Skill
