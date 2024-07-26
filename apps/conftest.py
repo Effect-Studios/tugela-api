@@ -3,6 +3,12 @@ from pytest_factoryboy import register
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.common.utils import OTPUtils
+from apps.freelancers.tests.factories import (
+    FreelancerFactory,
+    PortfolioItemFactory,
+    ServiceFactory,
+    WorkExperienceFactory,
+)
 from apps.users.models import User
 from apps.users.tests.factories import (
     AddressFactory,
@@ -12,11 +18,17 @@ from apps.users.tests.factories import (
     UserFactory,
 )
 
+# User
 register(UserFactory)
 register(AddressFactory)
 register(ProfileFactory)
 register(SkillFactory)
 register(CategoryFactory)
+# Freelancer
+register(ServiceFactory)
+register(FreelancerFactory)
+register(WorkExperienceFactory)
+register(PortfolioItemFactory)
 
 
 @pytest.fixture(autouse=True)
@@ -45,7 +57,7 @@ def admin(test_password) -> User:
 
 
 @pytest.fixture
-def manage(test_password) -> User:
+def manager(test_password) -> User:
     return UserFactory(password=test_password, role="manager")
 
 

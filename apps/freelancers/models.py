@@ -16,6 +16,9 @@ class Freelancer(base_models.BaseModel):
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )
 
+    class Meta:
+        ordering = ("created_at",)
+
     def __str__(self):
         return self.user.username
 
@@ -47,7 +50,7 @@ class PortfolioItem(base_models.BaseModel):
     title = models.CharField(max_length=50)
     description = models.TextField(blank=True)
     category = models.ForeignKey("users.Category", on_delete=models.SET_NULL, null=True)
-    skills = models.ManyToManyField("users.Skill")
+    skills = models.ManyToManyField("users.Skill", blank=True)
     project_url = models.CharField(max_length=100, blank=True)
     video_url = models.CharField(max_length=100, blank=True)
     start_date = models.DateField()
@@ -75,7 +78,7 @@ class Service(base_models.BaseModel):
     title = models.CharField(max_length=50)
     description = models.TextField(blank=True)
     category = models.ForeignKey("users.Category", on_delete=models.SET_NULL, null=True)
-    skills = models.ManyToManyField("users.Skill")
+    skills = models.ManyToManyField("users.Skill", blank=True)
     delivery_time = models.CharField(
         max_length=50, blank=True, help_text=_("E.g 3 days")
     )

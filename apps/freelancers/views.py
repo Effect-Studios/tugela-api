@@ -13,17 +13,18 @@ from .serializers import (
 
 
 class FreelancerView(ModelViewSet):
-    queryset = Freelancer.objects.all()
+    queryset = Freelancer.objects.all().order_by("created_at")
     serializer_class = FreelancerSerializer
     filterset_fields = ("user",)
 
     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
+    ordering = ["created_at"]
 
     def get_queryset(self):
         user = self.request.user
         if user.is_anonymous:
             return self.queryset.none()
-        if user.is_staff or user.role == user.Role.ADMIN:
+        if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(user=user)
 
@@ -45,7 +46,7 @@ class WorkExperienceView(ModelViewSet):
         user = self.request.user
         if user.is_anonymous:
             return self.queryset.none()
-        if user.is_staff or user.role == user.Role.ADMIN:
+        if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(freelancer__user=user)
 
@@ -71,7 +72,7 @@ class PortfolioItemView(ModelViewSet):
         user = self.request.user
         if user.is_anonymous:
             return self.queryset.none()
-        if user.is_staff or user.role == user.Role.ADMIN:
+        if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(freelancer__user=user)
 
@@ -97,7 +98,7 @@ class ServiceView(ModelViewSet):
         user = self.request.user
         if user.is_anonymous:
             return self.queryset.none()
-        if user.is_staff or user.role == user.Role.ADMIN:
+        if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(freelancer__user=user)
 
