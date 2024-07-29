@@ -45,6 +45,7 @@ class User(PermissionsMixin, base_models.BaseModel, AbstractBaseUser):
 
     class Roles(models.TextChoices):
         MANAGER = "manager", _("Manager")
+        OWNER = "owner", _("Owner")
         ADMIN = "admin", _("Admin")
         USER = "user", _("User")
 
