@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import models as base_models
@@ -24,6 +25,9 @@ class Company(base_models.BaseModel):
         PRIVATELY_HELD = "privately_held", _("Privately Help")
         PARTNERSHIP = "partnership", _("Partnership")
 
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="owner_of"
+    )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     company_size = models.CharField(
@@ -60,3 +64,21 @@ class CompanyManager(base_models.BaseModel):
 
     def __str__(self):
         return f"{self.user.username}::{self.company.name}"
+
+
+# SIGNALS
+# ---------------------------------------------------
+@receiver(models.signals.post_save, sender=Company)
+def set_owner_role(sender, instance, created, **kwargs):
+    if created:
+        user = instance.user
+        user.role = user.Roles.OWNER
+        user.save(update_fields=["role", "updated_at"])
+
+
+@receiver(models.signals.post_save, sender=CompanyManager)
+def set_manger_role(sender, instance, created, **kwargs):
+    if created:
+        user = instance.user
+        user.role = user.Roles.MANAGER
+        user.save(update_fields=["role", "updated_at"])
