@@ -26,7 +26,7 @@ class Company(base_models.BaseModel):
         PARTNERSHIP = "partnership", _("Partnership")
 
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, related_name="owner_of"
+        User, on_delete=models.CASCADE, null=True, related_name="company"
     )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)

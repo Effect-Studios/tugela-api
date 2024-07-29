@@ -32,6 +32,13 @@ class BaseModel(models.Model):
             self.save(update_fields=["is_active", "updated_at"] if self.pk else None)
 
 
+class PriceType(models.TextChoices):
+    PER_PROJECT = "per_project", _("Per Project")
+    PER_HOUR = "per_hour", _("Per Hour")
+    PER_WEEK = "per_week", _("Per Week")
+    PER_MONTH = "per_month", _("Per Month")
+
+
 class HowYouFoundUs(models.TextChoices):
     FACEBOOK = "facebook", _("Facebook")
     TWITTER = "twitter", _("Twitter")

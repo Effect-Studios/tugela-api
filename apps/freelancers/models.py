@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import models as base_models
-from apps.common.models import Currency, HowYouFoundUs
+from apps.common.models import Currency, HowYouFoundUs, PriceType
 
 # Create your models here.
 User = get_user_model()
@@ -65,12 +65,6 @@ class PortfolioItem(base_models.BaseModel):
 
 
 class Service(base_models.BaseModel):
-    class PriceType(models.TextChoices):
-        PER_PROJECT = "per_project", _("Per Project")
-        PER_HOUR = "per_hour", _("Per Hour")
-        PER_WEEK = "per_week", _("Per Week")
-        PER_MONTH = "per_month", _("Per Month")
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     freelancer = models.ForeignKey(
         "Freelancer", on_delete=models.CASCADE, related_name="services"
