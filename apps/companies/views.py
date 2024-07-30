@@ -1,7 +1,8 @@
+from django.db.models import Q
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 
-from apps.common.permissions import IsAdmin, IsOwner
+from apps.common.permissions import IsAdmin, IsCompanyOwner
 
 from .models import Company, CompanyManager
 from .serializers import CompanyManagerSerializer, CompanySerializer
@@ -25,7 +26,7 @@ class CompanyView(ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "delete"]:
-            self.permission_classes = [IsOwner | IsAdmin]
+            self.permission_classes = [IsCompanyOwner | IsAdmin]
         return super().get_permissions()
 
 
@@ -44,4 +45,4 @@ class CompanyManagerView(ModelViewSet):
             return self.queryset.none()
         if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
-        return self.queryset.filter(user=user)
+        return self.queryset.filter(Q(user=user) | Q(company__user=user))

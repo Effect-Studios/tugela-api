@@ -3,6 +3,7 @@ from pytest_factoryboy import register
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.common.utils import OTPUtils
+from apps.companies.tests.factories import CompanyFactory, CompanyManagerFactory
 from apps.freelancers.tests.factories import (
     FreelancerFactory,
     PortfolioItemFactory,
@@ -29,6 +30,9 @@ register(ServiceFactory)
 register(FreelancerFactory)
 register(WorkExperienceFactory)
 register(PortfolioItemFactory)
+# Company
+register(CompanyFactory)
+register(CompanyManagerFactory)
 
 
 @pytest.fixture(autouse=True)

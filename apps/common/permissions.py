@@ -32,7 +32,11 @@ class IsCompanyManager(BasePermission):
         return check_auth(request) and user.role == User.Roles.MANAGER
 
     def has_object_permission(self, request, view, obj):
-        return check_auth(request) and obj.company in request.user.companies
+        return (
+            check_auth(request) and obj.company in request.user.companies.all()
+            if hasattr(obj, "company")
+            else obj in request.user.companies.all()
+        )
 
 
 class IsCompanyOwner(BasePermission):
@@ -41,4 +45,8 @@ class IsCompanyOwner(BasePermission):
         return check_auth(request) and user.role == User.Roles.OWNER
 
     def has_object_permission(self, request, view, obj):
-        return check_auth(request) and obj.company == request.user.company
+        return (
+            check_auth(request) and obj.company in request.user.company.all()
+            if hasattr(obj, "company")
+            else obj in request.user.company.all()
+        )
