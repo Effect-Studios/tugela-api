@@ -10,6 +10,7 @@ from apps.freelancers.tests.factories import (
     ServiceFactory,
     WorkExperienceFactory,
 )
+from apps.jobs.tests.factories import ApplicationFactory, JobFactory, TagFactory
 from apps.users.models import User
 from apps.users.tests.factories import (
     AddressFactory,
@@ -33,6 +34,10 @@ register(PortfolioItemFactory)
 # Company
 register(CompanyFactory)
 register(CompanyManagerFactory)
+# Jobs
+register(TagFactory)
+register(JobFactory)
+register(ApplicationFactory)
 
 
 @pytest.fixture(autouse=True)

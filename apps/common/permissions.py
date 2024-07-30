@@ -33,7 +33,7 @@ class IsCompanyManager(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return (
-            check_auth(request) and obj.company in request.user.companies.all()
+            check_auth(request) and obj.company.mangers in request.user.companies.all()
             if hasattr(obj, "company")
             else obj in request.user.companies.all()
         )

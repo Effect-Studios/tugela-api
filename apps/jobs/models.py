@@ -41,7 +41,7 @@ class Job(base_models.BaseModel):
     address = models.ForeignKey(
         "users.Address", on_delete=models.SET_NULL, blank=True, null=True
     )
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
     price_type = models.CharField(max_length=50, choices=PriceType.choices)
     price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     currency = models.CharField(

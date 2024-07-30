@@ -16,7 +16,7 @@ class TagView(ModelViewSet):
     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
 
     def get_permissions(self):
-        if self.action in ["list", "read"]:
+        if self.action in ["list", "retrieve"]:
             self.permission_classes = [AllowAny]
         return super().get_permissions()
 
@@ -43,11 +43,11 @@ class ApplicationView(ModelViewSet):
             return self.queryset
         return self.queryset.filter(
             Q(freelancer__user=user)
-            | Q(job__company__in=user.companies_managed)
-            | Q(job__company__in=user.company)
+            | Q(job__company__managers__in=user.companies_managed.all())
+            | Q(job__company__user=user)
         )
 
-    def get_permissions(self):
-        if self.action in ["update", "partial_update", "delete"]:
-            self.permission_classes = [IsAdmin | IsCompanyOwner | IsCompanyManager]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.action in ["update", "partial_update", "delete"]:
+    #         self.permission_classes = [IsAdmin | IsCompanyOwner | IsCompanyManager]
+    #     return super().get_permissions()
