@@ -29,7 +29,7 @@ class Job(base_models.BaseModel):
         ASSIGNED = "assigned", _("Assigned")
         COMPLETED = "completed", _("Completed")
 
-    comapny = models.ForeignKey(
+    company = models.ForeignKey(
         "companies.Company", on_delete=models.CASCADE, related_name="jobs"
     )
     title = models.CharField(max_length=65)

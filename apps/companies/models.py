@@ -54,7 +54,9 @@ class Company(base_models.BaseModel):
 
 
 class CompanyManager(base_models.BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="companies")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="companies_managed"
+    )
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name="managers"
     )

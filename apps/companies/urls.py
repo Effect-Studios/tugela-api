@@ -5,7 +5,7 @@ from .views import CompanyManagerView, CompanyView
 router = SimpleRouter()
 
 
-router.register("company-manager", CompanyManagerView, basename="company-manager")
+router.register("managers", CompanyManagerView, basename="company-manager")
 router.register("", CompanyView, basename="company")
 
 
