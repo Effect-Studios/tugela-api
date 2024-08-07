@@ -50,13 +50,6 @@ class SignupResponseSerializer(serializers.ModelSerializer):
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["email", "username", "account_type", "role", "id"]
-        read_only_fields = ["role", "account_type"]
-
-
 class ForgotPasswordSerializer(serializers.Serializer):
     """
     serializer for initiating forgot password. Send reset code
@@ -167,6 +160,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_address_name(self, profile) -> str:
         return profile.address.address_name if profile.address else ""
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["email", "username", "account_type", "role", "profile", "id"]
+        read_only_fields = ["role", "account_type"]
 
 
 class SkillSerializer(serializers.ModelSerializer):

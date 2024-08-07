@@ -20,7 +20,7 @@ router.register("users", UserView, basename="users")
 router.register("profile", ProfileView, basename="profile")
 router.register("address", AddressView, basename="address")
 router.register("category", CategoryView, basename="category")
-router.register("skill", SkillView, basename="skill")
+router.register("skills", SkillView, basename="skill")
 
 
 urlpatterns = [
