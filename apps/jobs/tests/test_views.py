@@ -16,7 +16,7 @@ class TestTag:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -29,7 +29,7 @@ class TestTag:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["name"] == data["name"]
@@ -41,7 +41,7 @@ class TestTag:
 
         client = api_client_auth(user=admin)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["name"] == data["name"]
@@ -52,7 +52,7 @@ class TestTag:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["name"] == tag.name
@@ -69,7 +69,7 @@ class TestJob:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -85,7 +85,7 @@ class TestJob:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["title"] == data["title"]
@@ -98,7 +98,7 @@ class TestJob:
         url = reverse("api:jobs-detail", args=(job.id,))
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["title"] == data["title"]
@@ -109,7 +109,7 @@ class TestJob:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["title"] == job.title
@@ -131,7 +131,7 @@ class TestApplication:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -147,7 +147,7 @@ class TestApplication:
 
         client = api_client_auth(user=user)
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["status"] == "pending"
@@ -164,7 +164,7 @@ class TestApplication:
         url = reverse("api:applications-detail", args=(application.id,))
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["status"] == data["status"]
@@ -178,7 +178,7 @@ class TestApplication:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["status"] == application.status

@@ -20,7 +20,7 @@ class TestFreelancer:
         client = api_client_auth(user=admin)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -33,7 +33,7 @@ class TestFreelancer:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["user"] == data["user"]
@@ -45,7 +45,7 @@ class TestFreelancer:
 
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["how_you_found_us"] == data["how_you_found_us"]
@@ -56,7 +56,7 @@ class TestFreelancer:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["how_you_found_us"] == freelancer.how_you_found_us
@@ -73,7 +73,7 @@ class TestWorkExpperience:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -90,7 +90,7 @@ class TestWorkExpperience:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["freelancer"] == data["freelancer"]
@@ -108,7 +108,7 @@ class TestWorkExpperience:
 
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["job_title"] == data["job_title"]
@@ -124,7 +124,7 @@ class TestWorkExpperience:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["company_name"] == work_experience.company_name
@@ -141,7 +141,7 @@ class TestPortfolioItem:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -158,7 +158,7 @@ class TestPortfolioItem:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["freelancer"] == data["freelancer"]
@@ -175,7 +175,7 @@ class TestPortfolioItem:
 
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["title"] == data["title"]
@@ -189,7 +189,7 @@ class TestPortfolioItem:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["title"] == portfolio.title
@@ -206,7 +206,7 @@ class TestService:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -223,7 +223,7 @@ class TestService:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["freelancer"] == data["freelancer"]
@@ -240,7 +240,7 @@ class TestService:
 
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["title"] == data["title"]
@@ -254,7 +254,7 @@ class TestService:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["title"] == service.title

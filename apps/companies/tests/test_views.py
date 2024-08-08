@@ -17,7 +17,7 @@ class TestCompany:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -32,7 +32,7 @@ class TestCompany:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         user.refresh_from_db()
 
@@ -47,7 +47,7 @@ class TestCompany:
 
         client = api_client_auth(user=user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["name"] == data["name"]
@@ -58,7 +58,7 @@ class TestCompany:
 
         client = api_client_auth(user=user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["name"] == company.name
@@ -80,7 +80,7 @@ class TestCompanyManager:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -96,7 +96,7 @@ class TestCompanyManager:
         data = {"user": str(manager.id), "company": str(company.id)}
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         manager.refresh_from_db()
 
@@ -122,7 +122,7 @@ class TestCompanyManager:
 
         client = api_client_auth(user=company_manger.user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["company"]

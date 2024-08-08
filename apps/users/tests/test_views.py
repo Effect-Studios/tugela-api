@@ -15,7 +15,7 @@ class TestUserView:
         client = api_client_auth(user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert "results" in resp_data
@@ -25,7 +25,7 @@ class TestUserView:
         client = api_client_auth(user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["email"] == user.email
@@ -36,7 +36,7 @@ class TestUserView:
         data = {"email": "a@a.com", "username": "Hello World"}
 
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["username"] == data["username"]
@@ -51,7 +51,7 @@ class TestUserView:
         client = api_client_auth(user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["email"] == user.email
@@ -118,7 +118,7 @@ class TestAuthView:
         url = reverse("api:forget-password")
 
         resp = api_client.post(url, data={"email": user.email})
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert "token" in resp_data
@@ -128,8 +128,7 @@ class TestAuthView:
         url = reverse("api:forget-password")
 
         resp = api_client.post(url, data={"email": "a@a.com"})
-        resp_data = resp.json()
-
+        resp_data = resp.json()["data"]
         assert resp.status_code == status.HTTP_200_OK
         assert "token" in resp_data
         assert len(mail.outbox) == 0
@@ -139,7 +138,7 @@ class TestAuthView:
         url = reverse("api:reset-password")
         data = {"token": token, "code": code, "password": test_password}
         resp = api_client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert "message" in resp_data
@@ -149,7 +148,7 @@ class TestAuthView:
         url = reverse("api:reset-password")
         data = {"token": token, "code": "000000", "password": test_password}
         resp = api_client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["error"]["details"]
 
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
         assert "Invalid code" in resp_data
@@ -161,7 +160,7 @@ class TestAuthView:
         url = reverse("api:reset-password")
         data = {"token": wrong_otp_token, "code": code, "password": test_password}
         resp = api_client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["error"]["details"]
 
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
         assert "Invalid token" in resp_data
@@ -175,7 +174,7 @@ class TestAddress:
         client = api_client_auth(user=admin_user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -190,7 +189,7 @@ class TestAddress:
         }
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["address_name"] == data["address_name"]
@@ -202,7 +201,7 @@ class TestAddress:
 
         client = api_client_auth(user=admin_user)
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["address_name"] == data["address_name"]
@@ -213,7 +212,7 @@ class TestAddress:
 
         client = api_client_auth(user=admin_user)
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["address_name"] == address.address_name
@@ -226,7 +225,7 @@ class TestProfile:
         client = api_client_auth(user=admin_user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 2
@@ -237,7 +236,7 @@ class TestProfile:
         data = {"gender": "f"}
 
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["gender"] == data["gender"]
@@ -248,7 +247,7 @@ class TestProfile:
         client = api_client_auth(user=user)
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["user"] == str(user.id)
@@ -262,7 +261,7 @@ class TestCategory:
         client = api_client
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -273,7 +272,7 @@ class TestCategory:
         data = {"name": "Test Category"}
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["name"] == data["name"]
@@ -285,7 +284,7 @@ class TestCategory:
         data = {"name": "Updated Category"}
 
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["name"] == data["name"]
@@ -297,7 +296,7 @@ class TestCategory:
         client = api_client
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["id"] == str(category.id)
@@ -311,7 +310,7 @@ class TestSkill:
         client = api_client
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert len(resp_data["results"]) == 3
@@ -322,7 +321,7 @@ class TestSkill:
         data = {"name": "Test Skill"}
 
         resp = client.post(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["name"] == data["name"]
@@ -334,7 +333,7 @@ class TestSkill:
         data = {"name": "Updated Skill"}
 
         resp = client.patch(url, data=data)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["name"] == data["name"]
@@ -346,7 +345,7 @@ class TestSkill:
         client = api_client
 
         resp = client.get(url)
-        resp_data = resp.json()
+        resp_data = resp.json()["data"]
 
         assert resp.status_code == status.HTTP_200_OK
         assert resp_data["id"] == str(skill.id)
