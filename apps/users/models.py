@@ -127,7 +127,7 @@ class Profile(base_models.BaseModel):
         ordering = ("created_at",)
 
     def __str__(self):
-        return f"{self.user.username}'s profile"
+        return f"{self.user.username or self.user.email}'s profile"
 
 
 class Category(base_models.BaseModel):
