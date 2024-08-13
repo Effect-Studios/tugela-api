@@ -75,7 +75,8 @@ def set_owner_role(sender, instance, created, **kwargs):
     if created:
         user = instance.user
         user.role = user.Roles.OWNER
-        user.save(update_fields=["role", "updated_at"])
+        user.account_type = user.AccountType.COMPANY
+        user.save(update_fields=["role", "company", "updated_at"])
 
 
 @receiver(models.signals.post_save, sender=CompanyManager)
@@ -83,4 +84,5 @@ def set_manger_role(sender, instance, created, **kwargs):
     if created:
         user = instance.user
         user.role = user.Roles.MANAGER
-        user.save(update_fields=["role", "updated_at"])
+        user.account_type = user.AccountType.COMPANY
+        user.save(update_fields=["role", "company", "updated_at"])
