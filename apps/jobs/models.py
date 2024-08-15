@@ -45,7 +45,7 @@ class Job(base_models.BaseModel):
     price_type = models.CharField(max_length=50, choices=PriceType.choices)
     price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     currency = models.CharField(
-        max_length=20, choices=Currency.choices, default=Currency.USD
+        max_length=20, choices=Currency.choices, default=Currency.XRP
     )
     status = models.CharField(
         max_length=25, choices=Status.choices, default=Status.ACTIVE
@@ -54,6 +54,9 @@ class Job(base_models.BaseModel):
         max_length=25, choices=ApplicationType.choices, default=ApplicationType.INTERNAL
     )
     external_apply_link = models.CharField(max_length=100, blank=True)
+    escrow_sequence = models.CharField(max_length=255, blank=True)
+    escrow_condition = models.CharField(max_length=255, blank=True)
+    escrow_fulfillment = models.CharField(max_length=255, blank=True)
 
     class Meta:
         ordering = ("created_at",)

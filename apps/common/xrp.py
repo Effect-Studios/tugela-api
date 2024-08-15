@@ -3,6 +3,7 @@ from os import urandom
 
 import xrpl
 from cryptoconditions import PreimageSha256
+from rest_framework.exceptions import ValidationError
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import AccountObjects
 from xrpl.models.transactions import EscrowCreate, EscrowFinish
@@ -34,6 +35,11 @@ def get_account_info(accountId):
     return response
 
 
+def get_acc_info(addr):
+    client = xrpl.clients.JsonRpcClient(testnet_url)
+    return xrpl.account.get_account_root(addr, client)
+
+
 def send_xrp(seed, amount, destination):
     sending_wallet = xrpl.wallet.Wallet.from_seed(seed)
     client = xrpl.clients.JsonRpcClient(testnet_url)
@@ -46,6 +52,7 @@ def send_xrp(seed, amount, destination):
         response = xrpl.transaction.submit_and_wait(payment, client, sending_wallet)
     except xrpl.transaction.XRPLReliableSubmissionException as e:
         response = f"Submit failed: {e}"
+        raise ValidationError(response)
 
     return response
 
@@ -76,7 +83,7 @@ def create_conditional_escrow(seed, amount, destination, cancel, condition):
         account=wallet.address,
         amount=amount,
         destination=destination,
-        cancel_after=cancel_date,
+        finish_after=cancel_date,
         condition=condition,
     )
     # Submit the transaction and report the results
@@ -86,6 +93,7 @@ def create_conditional_escrow(seed, amount, destination, cancel, condition):
         reply = response.result
     except xrpl.transaction.XRPLReliableSubmissionException as e:
         reply = f"Submit failed: {e}"
+        raise ValidationError(reply)
     return reply
 
 
@@ -106,6 +114,7 @@ def finish_conditional_escrow(seed, owner, sequence, condition, fulfillment):
         reply = response.result
     except xrpl.transaction.XRPLReliableSubmissionException as e:
         reply = f"Submit failed: {e}"
+        raise ValidationError(reply)
     return reply
 
 

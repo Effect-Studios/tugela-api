@@ -19,10 +19,12 @@ class CompanySerializer(serializers.ModelSerializer):
             "website",
             "logo",
             "how_you_found_us",
+            "xrp_address",
+            "xrp_seed",
             "created_at",
             "updated_at",
         ]
-        extra_kwargs = {"user": {"required": True}}
+        extra_kwargs = {"user": {"required": True}, "xrp_seed": {"write_only": True}}
 
 
 class CompanyManagerSerializer(serializers.ModelSerializer):

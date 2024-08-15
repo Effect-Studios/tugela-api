@@ -45,6 +45,8 @@ class Company(base_models.BaseModel):
     how_you_found_us = models.CharField(
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )
+    xrp_address = models.CharField(max_length=255, blank=True)
+    xrp_seed = models.CharField(max_length=255, blank=True)
 
     class Meta:
         ordering = ("created_at",)

@@ -12,6 +12,8 @@ User = get_user_model()
 
 class Freelancer(base_models.BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    xrp_address = models.CharField(max_length=255, blank=True)
+    xrp_seed = models.CharField(max_length=255, blank=True)
     how_you_found_us = models.CharField(
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )

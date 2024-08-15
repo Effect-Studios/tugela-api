@@ -59,3 +59,4 @@ class Currency(models.TextChoices):
     ZAR = "ZAR", _("South African Rand")
     EUR = "EUR", _("Euro")
     CAD = "CAD", _("Canadian Dollar")
+    XRP = "XRP", _("Ripple")

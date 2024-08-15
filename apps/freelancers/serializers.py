@@ -6,7 +6,8 @@ from .models import Freelancer, PortfolioItem, Service, WorkExperience
 class FreelancerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Freelancer
-        fields = ["id", "user", "how_you_found_us"]
+        fields = ["id", "user", "xrp_address", "xrp_seed", "how_you_found_us"]
+        extra_kwargs = {"xrp_seed": {"write_only": True}}
 
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
