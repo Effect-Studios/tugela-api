@@ -22,7 +22,7 @@ class Freelancer(base_models.BaseModel):
         ordering = ("created_at",)
 
     def __str__(self):
-        return self.user.username
+        return self.user.username or self.user.email
 
 
 class WorkExperience(base_models.BaseModel):
