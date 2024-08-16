@@ -16,4 +16,4 @@ Pillow==9.5.0
 # -------------------------------------------
 google-cloud-tasks==2.5.1  # https://github.com/googleapis/python-tasks
 xrpl-py==3.0.0
-cryptoconditions==0.8.1s
+cryptoconditions==0.8.1

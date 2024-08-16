@@ -63,6 +63,7 @@ LOCAL_APPS = [
     "apps.freelancers.apps.FreelancersConfig",
     "apps.companies.apps.CompaniesConfig",
     "apps.jobs.apps.JobsConfig",
+    "apps.extras.apps.ExtrasConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
