@@ -141,14 +141,13 @@ class TestApplication:
     ):
         url = reverse("api:applications-list")
 
-        freelancer = freelancer_factory(user=user)
+        freelancer = freelancer_factory(user=user, xrp_address="rippleaddress")
         job = job_factory()
         data = {"job": str(job.id), "freelancer": str(freelancer.id)}
 
         client = api_client_auth(user=user)
         resp = client.post(url, data=data)
         resp_data = resp.json()["data"]
-
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp_data["status"] == "pending"
         assert resp_data["freelancer"] == str(freelancer.id)

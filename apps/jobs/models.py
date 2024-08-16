@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -38,10 +39,12 @@ class Job(base_models.BaseModel):
     location = models.CharField(
         max_length=25, choices=LocationType.choices, default=LocationType.REMOTE
     )
-    address = models.ForeignKey(
-        "users.Address", on_delete=models.SET_NULL, blank=True, null=True
+    address = models.CharField(
+        max_length=255,
+        blank=True,
     )
     tags = models.ManyToManyField(Tag, blank=True)
+    skills = ArrayField(models.CharField(max_length=50, blank=True), default=list)
     price_type = models.CharField(max_length=50, choices=PriceType.choices)
     price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     currency = models.CharField(
