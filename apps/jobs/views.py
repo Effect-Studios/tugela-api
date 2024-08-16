@@ -17,6 +17,7 @@ from .serializers import (
     JobSerializer,
     RedeemEscrowSerializer,
     TagSerializer,
+    UpdateApplicationStatusSerializer,
 )
 
 # api schema
@@ -72,6 +73,8 @@ class ApplicationView(ModelViewSet):
             self.serializer_class = CreateEscrowSerializer
         if self.action == "redeem_escrow":
             self.serializer_class = RedeemEscrowSerializer
+        if self.action == "update_status":
+            self.serializer_class = UpdateApplicationStatusSerializer
         return super().get_serializer_class()
 
     # def get_permissions(self):
@@ -88,8 +91,8 @@ class ApplicationView(ModelViewSet):
     def create_escrow(self, request, *args, **kwargs):
         application = self.get_object()
         serializer = self.get_serializer(application)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        res = serializer.save()
+        return Response(res, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         method="get",
@@ -100,5 +103,18 @@ class ApplicationView(ModelViewSet):
     def redeem_escrow(self, request, *args, **kwargs):
         application = self.get_object()
         serializer = self.get_serializer(application)
+        res = serializer.save()
+        return Response(res, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        method="post",
+        request_body=UpdateApplicationStatusSerializer,
+        responses={200: response_schema},
+    )
+    @action(detail=True, methods=["POST"], url_path="update-status")
+    def update_status(self, request, *args, **kwargs):
+        application = self.get_object()
+        serializer = self.get_serializer(application, data=request.data)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

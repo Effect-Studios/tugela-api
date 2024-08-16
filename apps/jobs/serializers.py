@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from xrpl.utils import xrp_to_drops
 
@@ -77,31 +78,31 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
         read_only_fields = ["freelancer", "job", "status"]
 
     def save(self):
-        validated_data = self.instance
-        status = validated_data.get("status")
+        data = self.instance
+        status = data.status
 
         if status == Application.Status.ACCEPTED:
-            job = validated_data.get("job")
+            job = data.job
             if job.escrow_sequence and job.escrow_condition and job.escrow_fulfillment:
                 raise serializers.ValidationError("Escrow already created")
 
             company = job.company
-            freelancer = validated_data.get("freelancer")
+            freelancer = data.freelancer
 
             # check if company has xrp address and seed
             if not company.xrp_address and not company.xrp_seed:
                 raise serializers.ValidationError("Update xrp address and seed")
 
             # check currency
-            if company.curreny is not Currency.XRP:
+            if job.currency != Currency.XRP:
                 raise serializers.ValidationError("Price should be in Ripple")
 
             # check sufficient balance
             address = company.xrp_address
-            price = validated_data.get("price")
+            price = job.price
             reserve = 15  # ripple accounts must have reserve balance
             price_n_reserve = price + reserve
-            price_n_reserve_in_drops = xrp_to_drops(price_n_reserve)
+            price_n_reserve_in_drops = int(xrp_to_drops(price_n_reserve))
 
             res = get_acc_info(address)
             acc_bal = int(res["Balance"])
@@ -117,10 +118,8 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
             escrow = create_conditional_escrow(
                 company_seed, price_in_drops, freelancer_address, finish_time, condition
             )
-
             # Update jobs
-            job = validated_data.get("job")
-            escrow_sequence = escrow["Sequence"]
+            escrow_sequence = escrow["tx_json"]["Sequence"]
             job.escrow_condition = condition
             job.escrow_fulfillment = fulfillment
             job.escrow_sequence = escrow_sequence
@@ -129,7 +128,7 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
                     "escrow_sequence",
                     "escrow_condition",
                     "escrow_fulfillment",
-                    "update_fields",
+                    "updated_at",
                 ]
             )
 
@@ -150,11 +149,10 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
         read_only_fields = ["freelancer", "job", "status"]
 
     def save(self):
-        validated_data = self.instance
-        status = validated_data.get("status")
+        data = self.instance
+        job = data.job
 
-        if status == Application.Status.COMPLETED:
-            job = validated_data.get("job")
+        if job.status == job.Status.COMPLETED:
             sequence = job.escrow_sequence
             condition = job.escrow_condition
             fulfillment = job.escrow_fulfillment
@@ -164,12 +162,38 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
             # redeem escrow for Job
             company = job.company
             company_seed = company.xrp_seed
-            finish_conditional_escrow(company_seed, sequence, condition, fulfillment)
+            company_address = company.xrp_address
+            finish_conditional_escrow(
+                company_seed, company_address, sequence, condition, fulfillment
+            )
+            return {"message": "Escrow redeemed"}
 
-        return {"message": "Escrow redeemed"}
+        return {"message": "Escrow condition not met"}
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ("id", "freelancer", "job", "status", "created_at", "updated_at")
+
+
+class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ("id", "freelancer", "job", "status", "created_at", "updated_at")
+        read_only_fields = ["freelancer", "job"]
+
+    def update(self, instance, validated_data):
+        status = validated_data.get("status")
+        if status == instance.Status.ACCEPTED:
+            job = instance.job
+            if job.status == job.Status.ACTIVE:
+                with transaction.atomic():
+                    job.status = job.Status.ASSIGNED
+                    instance.status = status
+
+                    job.save(update_fields=["status", "updated_at"])
+                    instance.save(update_fields=["status", "updated_at"])
+
+                return instance
+        return super().update(instance, validated_data)
