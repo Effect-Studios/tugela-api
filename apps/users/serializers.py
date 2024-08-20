@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.common.email import send_email
+from apps.common.serializers import CompanyBaseSerializer, FreelancerBaseSerializer
 from apps.common.utils import OTPUtils
 
 from .models import Address, Category, Profile, Skill
@@ -164,11 +165,27 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+    freelancer = FreelancerBaseSerializer(read_only=True)
+    company = serializers.SerializerMethodField()
+    # company = CompanyBaseSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
-        fields = ["email", "username", "account_type", "role", "profile", "id"]
+        fields = [
+            "id",
+            "email",
+            "username",
+            "account_type",
+            "role",
+            "profile",
+            "freelancer",
+            "company",
+        ]
         read_only_fields = ["role", "account_type"]
+
+    def get_company(self, obj) -> dict:
+        company = obj.company.first()
+        return CompanyBaseSerializer(company).data
 
 
 class SkillSerializer(serializers.ModelSerializer):

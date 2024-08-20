@@ -37,7 +37,7 @@ class FreelancerView(ModelViewSet):
 class WorkExperienceView(ModelViewSet):
     queryset = WorkExperience.objects.all()
     serializer_class = WorkExperienceSerializer
-    filterset_fields = ("user",)
+    filterset_fields = ("user", "freelancer")
     parser_classes = (FormParser, MultiPartParser, JSONParser)
 
     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
@@ -63,7 +63,7 @@ class WorkExperienceView(ModelViewSet):
 class PortfolioItemView(ModelViewSet):
     queryset = PortfolioItem.objects.all()
     serializer_class = PortfolioItemSerializer
-    filterset_fields = ("user",)
+    filterset_fields = ("user", "freelancer")
     parser_classes = (FormParser, MultiPartParser, JSONParser)
 
     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
@@ -89,7 +89,7 @@ class PortfolioItemView(ModelViewSet):
 class ServiceView(ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    filterset_fields = ("user",)
+    filterset_fields = ("user", "freelancer")
     parser_classes = (FormParser, MultiPartParser, JSONParser)
 
     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]

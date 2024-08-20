@@ -27,6 +27,29 @@ class CompanySerializer(serializers.ModelSerializer):
         extra_kwargs = {"user": {"required": True}, "xrp_seed": {"write_only": True}}
 
 
+class CompanyReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = [
+            "id",
+            "user",
+            "name",
+            "description",
+            "email",
+            "phone_number",
+            "tagline",
+            "company_size",
+            "organization_type",
+            "website",
+            "logo",
+            "how_you_found_us",
+            "xrp_address",
+            "managers",
+            "created_at",
+            "updated_at",
+        ]
+
+
 class CompanyManagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompanyManager
