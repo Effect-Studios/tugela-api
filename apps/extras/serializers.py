@@ -6,13 +6,13 @@ from .models import Country, Currency
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
-        fields = ("uuid", "code", "name", "factor", "precision", "symbol", "_type")
+        fields = ("id", "code", "name", "factor", "precision", "symbol", "_type")
 
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ["uuid", "name", "iso", "code"]
+        fields = ["id", "name", "iso", "code"]
 
 
 class CurrencyQueryParamSerializer(serializers.Serializer):

@@ -5,7 +5,11 @@ from rest_framework.viewsets import ModelViewSet
 from apps.common.permissions import IsAdmin, IsCompanyOwner
 
 from .models import Company, CompanyManager
-from .serializers import CompanyManagerSerializer, CompanySerializer
+from .serializers import (
+    CompanyManagerSerializer,
+    CompanyReadSerializer,
+    CompanySerializer,
+)
 
 
 class CompanyView(ModelViewSet):
@@ -23,6 +27,11 @@ class CompanyView(ModelViewSet):
         if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(user=user)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            self.serializer_class = CompanyReadSerializer
+        return super().get_serializer_class()
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "delete"]:
