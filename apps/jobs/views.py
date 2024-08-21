@@ -12,8 +12,10 @@ from apps.common.permissions import IsAdmin, IsCompanyManager, IsCompanyOwner
 from .models import Application, Job, Tag
 from .serializers import (
     ApplicationCreateSerializer,
+    ApplicationReadSerializer,
     ApplicationSerializer,
     CreateEscrowSerializer,
+    JobReadSerializer,
     JobSerializer,
     RedeemEscrowSerializer,
     TagSerializer,
@@ -49,6 +51,11 @@ class JobView(ModelViewSet):
             self.permission_classes = [IsAdmin | IsCompanyOwner | IsCompanyManager]
         return super().get_permissions()
 
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "list"]:
+            self.serializer_class = JobReadSerializer
+        return super().get_serializer_class()
+
 
 class ApplicationView(ModelViewSet):
     queryset = Application.objects.all().order_by("created_at")
@@ -69,6 +76,8 @@ class ApplicationView(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             self.serializer_class = ApplicationCreateSerializer
+        if self.action in ["retrieve", "list"]:
+            self.serializer_class = ApplicationReadSerializer
         if self.action == "create_escrow":
             self.serializer_class = CreateEscrowSerializer
         if self.action == "redeem_escrow":
@@ -111,7 +120,12 @@ class ApplicationView(ModelViewSet):
         request_body=UpdateApplicationStatusSerializer,
         responses={200: response_schema},
     )
-    @action(detail=True, methods=["POST"], url_path="update-status")
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAdmin | IsCompanyOwner | IsCompanyManager],
+        url_path="update-status",
+    )
     def update_status(self, request, *args, **kwargs):
         application = self.get_object()
         serializer = self.get_serializer(application, data=request.data)

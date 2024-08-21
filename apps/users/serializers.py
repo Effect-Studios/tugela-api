@@ -183,7 +183,10 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["role", "account_type"]
 
-    def get_company(self, obj) -> dict:
+    @swagger_serializer_method(
+        serializer_or_field=CompanyBaseSerializer(),
+    )
+    def get_company(self, obj):
         company = obj.company.first()
         return CompanyBaseSerializer(company).data
 

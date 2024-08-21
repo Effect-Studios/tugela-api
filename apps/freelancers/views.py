@@ -5,8 +5,11 @@ from apps.common.permissions import IsOwner
 
 from .models import Freelancer, PortfolioItem, Service, WorkExperience
 from .serializers import (
+    FreelancerReadSerializer,
     FreelancerSerializer,
+    PortfolioItemReadSerializer,
     PortfolioItemSerializer,
+    ServiceReadSerializer,
     ServiceSerializer,
     WorkExperienceSerializer,
 )
@@ -27,6 +30,11 @@ class FreelancerView(ModelViewSet):
         if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(user=user)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            self.serializer_class = FreelancerReadSerializer
+        return super().get_serializer_class()
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "delete"]:
@@ -76,6 +84,11 @@ class PortfolioItemView(ModelViewSet):
             return self.queryset
         return self.queryset.filter(freelancer__user=user)
 
+    def get_serializer_class(self):
+        if self.action in ["retrieve"]:
+            self.serializer_class = PortfolioItemReadSerializer
+        return super().get_serializer_class()
+
     def get_permissions(self):
         if self.action in ["update", "partial_update", "delete"]:
             self.permission_classes = [IsOwner]
@@ -101,6 +114,11 @@ class ServiceView(ModelViewSet):
         if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(freelancer__user=user)
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve"]:
+            self.serializer_class = ServiceReadSerializer
+        return super().get_serializer_class()
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "delete"]:

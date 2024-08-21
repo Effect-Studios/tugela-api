@@ -3,6 +3,7 @@ from rest_framework import serializers
 from xrpl.utils import xrp_to_drops
 
 from apps.common.models import Currency
+from apps.common.serializers import CompanyBaseSerializer, FreelancerBaseSerializer
 from apps.common.xrp import (
     create_conditional_escrow,
     finish_conditional_escrow,
@@ -42,17 +43,44 @@ class JobSerializer(serializers.ModelSerializer):
         )
 
 
+class JobReadSerializer(serializers.ModelSerializer):
+    company = CompanyBaseSerializer()
+    tags = TagSerializer(many=True)
+
+    class Meta:
+        model = Job
+        fields = (
+            "id",
+            "title",
+            "company",
+            "description",
+            "date",
+            "location",
+            "address",
+            "tags",
+            "price_type",
+            "price",
+            "currency",
+            "application_type",
+            "status",
+            "external_apply_link",
+            "created_at",
+            "updated_at",
+        )
+
+
 class ApplicationCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = (
             "id",
             "freelancer",
-            "status",
             "job",
+            "status",
             "created_at",
             "updated_at",
         )
+        read_only_fields = ["status"]
 
     def create(self, validated_data):
         freelancer = validated_data.get("freelancer")
@@ -172,6 +200,15 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ("id", "freelancer", "job", "status", "created_at", "updated_at")
+
+
+class ApplicationReadSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerBaseSerializer()
+    job = JobReadSerializer()
+
     class Meta:
         model = Application
         fields = ("id", "freelancer", "job", "status", "created_at", "updated_at")
