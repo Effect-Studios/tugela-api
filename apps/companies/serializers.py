@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.common.serializers import UserBaseSerializer
+
 from .models import Company, CompanyManager
 
 
@@ -34,6 +36,7 @@ class CompanyManagerSerializer(serializers.ModelSerializer):
 
 
 class CompanyReadSerializer(serializers.ModelSerializer):
+    user = UserBaseSerializer()
     managers = CompanyManagerSerializer(many=True)
 
     class Meta:
