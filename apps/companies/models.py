@@ -42,6 +42,9 @@ class Company(base_models.BaseModel):
     website = models.CharField(max_length=255, blank=True)
     logo = models.ImageField(upload_to="logos", blank=True, null=True)
     tagline = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=255, blank=True)
+    founded = models.CharField(max_length=255, blank=True)
+    values = models.ManyToManyField("CompanyValue", blank=True)
     how_you_found_us = models.CharField(
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )
@@ -68,6 +71,16 @@ class CompanyManager(base_models.BaseModel):
 
     def __str__(self):
         return f"{self.user.username}::{self.company.name}"
+
+
+class CompanyValue(base_models.BaseModel):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ("created_at",)
+
+    def __str__(self):
+        return self.name
 
 
 # SIGNALS
