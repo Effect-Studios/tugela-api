@@ -24,6 +24,12 @@ class CompanyIndustrySerializer(serializers.ModelSerializer):
 
 
 class CompanySerializer(serializers.ModelSerializer):
+    total_applications = serializers.SerializerMethodField()
+    active_jobs = serializers.SerializerMethodField()
+    assigned_jobs = serializers.SerializerMethodField()
+    completed_jobs = serializers.SerializerMethodField()
+    total_jobs = serializers.SerializerMethodField()
+
     class Meta:
         model = Company
         fields = [
@@ -43,10 +49,32 @@ class CompanySerializer(serializers.ModelSerializer):
             "xrp_seed",
             "values",
             "industry",
+            "founded",
+            "location",
+            "total_jobs",
+            "active_jobs",
+            "assigned_jobs",
+            "completed_jobs",
+            "total_applications",
             "created_at",
             "updated_at",
         ]
         extra_kwargs = {"user": {"required": True}, "xrp_seed": {"write_only": True}}
+
+    def get_total_applications(self, obj) -> int:
+        return obj.total_applications or 0
+
+    def get_active_jobs(self, obj) -> int:
+        return obj.active_jobs or 0
+
+    def get_total_jobs(self, obj) -> int:
+        return obj.total_jobs or 0
+
+    def get_assigned_jobs(self, obj) -> int:
+        return obj.assigned_jobs or 0
+
+    def get_completed_jobs(self, obj) -> int:
+        return obj.completed_jobs or 0
 
 
 class CompanyManagerSerializer(serializers.ModelSerializer):
@@ -60,6 +88,11 @@ class CompanyReadSerializer(serializers.ModelSerializer):
     managers = CompanyManagerSerializer(many=True)
     values = CompanyValueSerializer(many=True)
     industry = CompanyIndustrySerializer()
+    total_applications = serializers.SerializerMethodField()
+    active_jobs = serializers.SerializerMethodField()
+    assigned_jobs = serializers.SerializerMethodField()
+    completed_jobs = serializers.SerializerMethodField()
+    total_jobs = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -80,6 +113,28 @@ class CompanyReadSerializer(serializers.ModelSerializer):
             "managers",
             "values",
             "industry",
+            "founded",
+            "location",
+            "total_jobs",
+            "active_jobs",
+            "assigned_jobs",
+            "completed_jobs",
+            "total_applications",
             "created_at",
             "updated_at",
         ]
+
+    def get_total_applications(self, obj) -> int:
+        return obj.total_applications or 0
+
+    def get_active_jobs(self, obj) -> int:
+        return obj.active_jobs or 0
+
+    def get_total_jobs(self, obj) -> int:
+        return obj.total_jobs or 0
+
+    def get_assigned_jobs(self, obj) -> int:
+        return obj.assigned_jobs or 0
+
+    def get_completed_jobs(self, obj) -> int:
+        return obj.completed_jobs or 0

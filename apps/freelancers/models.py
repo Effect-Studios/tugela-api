@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from apps.common import models as base_models
 from apps.common.models import Currency, HowYouFoundUs, PriceType
 
+from .managers import FreelancerManager
+
 # Create your models here.
 User = get_user_model()
 
@@ -19,6 +21,8 @@ class Freelancer(base_models.BaseModel):
     how_you_found_us = models.CharField(
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )
+
+    objects = FreelancerManager()
 
     class Meta:
         ordering = ("created_at",)

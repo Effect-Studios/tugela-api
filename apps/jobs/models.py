@@ -19,6 +19,7 @@ class Job(base_models.BaseModel):
     class LocationType(models.TextChoices):
         REMOTE = "remote", _("Remote")
         ONSITE = "on-site", _("On Site")
+        HYBRID = "hybrid", _("Hybrid")
 
     class ApplicationType(models.TextChoices):
         INTERNAL = "internal", _("Internal")

@@ -7,6 +7,8 @@ from apps.common import models as base_models
 from apps.common.models import HowYouFoundUs
 from apps.users.models import phone_regex
 
+from .managers import CompanyManager
+
 User = get_user_model()
 
 
@@ -53,6 +55,8 @@ class Company(base_models.BaseModel):
     )
     xrp_address = models.CharField(max_length=255, blank=True)
     xrp_seed = models.CharField(max_length=255, blank=True)
+
+    objects = CompanyManager()
 
     class Meta:
         ordering = ("created_at",)

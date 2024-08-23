@@ -7,10 +7,32 @@ from .models import Freelancer, PortfolioItem, Service, WorkExperience
 
 
 class FreelancerSerializer(serializers.ModelSerializer):
+    total_applications = serializers.SerializerMethodField()
+    accepted_applications = serializers.SerializerMethodField()
+    rejected_applications = serializers.SerializerMethodField()
+
     class Meta:
         model = Freelancer
-        fields = ["id", "user", "xrp_address", "xrp_seed", "how_you_found_us"]
+        fields = [
+            "id",
+            "user",
+            "xrp_address",
+            "xrp_seed",
+            "how_you_found_us",
+            "total_applications",
+            "accepted_applications",
+            "rejected_applications",
+        ]
         extra_kwargs = {"xrp_seed": {"write_only": True}}
+
+    def get_total_applications(self, obj) -> int:
+        return obj.total_applications or 0
+
+    def get_accepted_applications(self, obj) -> int:
+        return obj.accepted_applications or 0
+
+    def get_rejected_applications(self, obj) -> int:
+        return obj.rejected_applications or 0
 
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
@@ -121,6 +143,9 @@ class FreelancerReadSerializer(serializers.ModelSerializer):
     work_experiences = WorkExperienceSerializer(many=True)
     portfolio_item = PortfolioItemSerializer(many=True)
     services = ServiceSerializer(many=True)
+    total_applications = serializers.SerializerMethodField()
+    accepted_applications = serializers.SerializerMethodField()
+    rejected_applications = serializers.SerializerMethodField()
 
     class Meta:
         model = Freelancer
@@ -133,5 +158,17 @@ class FreelancerReadSerializer(serializers.ModelSerializer):
             "work_experiences",
             "portfolio_item",
             "services",
+            "total_applications",
+            "accepted_applications",
+            "rejected_applications",
         ]
         extra_kwargs = {"xrp_seed": {"write_only": True}}
+
+    def get_total_applications(self, obj) -> int:
+        return obj.total_applications or 0
+
+    def get_accepted_applications(self, obj) -> int:
+        return obj.accepted_applications or 0
+
+    def get_rejected_applications(self, obj) -> int:
+        return obj.rejected_applications or 0
