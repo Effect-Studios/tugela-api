@@ -26,13 +26,13 @@ class FreelancerSerializer(serializers.ModelSerializer):
         extra_kwargs = {"xrp_seed": {"write_only": True}}
 
     def get_total_applications(self, obj) -> int:
-        return obj.total_applications or 0
+        return getattr(obj, "total_applications", 0)
 
     def get_accepted_applications(self, obj) -> int:
-        return obj.accepted_applications or 0
+        return getattr(obj, "accepted_applications", 0)
 
     def get_rejected_applications(self, obj) -> int:
-        return obj.rejected_applications or 0
+        return getattr(obj, "rejected_applications", 0)
 
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
