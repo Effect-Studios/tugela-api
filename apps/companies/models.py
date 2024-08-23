@@ -45,6 +45,9 @@ class Company(base_models.BaseModel):
     location = models.CharField(max_length=255, blank=True)
     founded = models.CharField(max_length=255, blank=True)
     values = models.ManyToManyField("CompanyValue", blank=True)
+    industry = models.ForeignKey(
+        "CompanyIndustry", on_delete=models.CASCADE, null=True, blank=True
+    )
     how_you_found_us = models.CharField(
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )
@@ -74,6 +77,16 @@ class CompanyManager(base_models.BaseModel):
 
 
 class CompanyValue(base_models.BaseModel):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ("created_at",)
+
+    def __str__(self):
+        return self.name
+
+
+class CompanyIndustry(base_models.BaseModel):
     name = models.CharField(max_length=100)
 
     class Meta:

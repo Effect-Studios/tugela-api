@@ -1,14 +1,17 @@
 from django.db.models import Q
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from apps.common.permissions import IsAdmin, IsCompanyOwner
 
-from .models import Company, CompanyManager
+from .models import Company, CompanyIndustry, CompanyManager, CompanyValue
 from .serializers import (
+    CompanyIndustrySerializer,
     CompanyManagerSerializer,
     CompanyReadSerializer,
     CompanySerializer,
+    CompanyValueSerializer,
 )
 
 
@@ -55,3 +58,15 @@ class CompanyManagerView(ModelViewSet):
         if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
         return self.queryset.filter(Q(user=user) | Q(company__user=user))
+
+
+class CompanyValueView(ReadOnlyModelViewSet):
+    queryset = CompanyValue.objects.all().order_by("created_at")
+    serializer_class = CompanyValueSerializer
+    permission_classes = [AllowAny]
+
+
+class CompanyIndustryView(ReadOnlyModelViewSet):
+    queryset = CompanyIndustry.objects.all().order_by("created_at")
+    serializer_class = CompanyIndustrySerializer
+    permission_classes = [AllowAny]

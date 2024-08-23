@@ -2,7 +2,25 @@ from rest_framework import serializers
 
 from apps.common.serializers import UserBaseSerializer
 
-from .models import Company, CompanyManager
+from .models import Company, CompanyIndustry, CompanyManager, CompanyValue
+
+
+class CompanyValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyValue
+        fields = [
+            "id",
+            "name",
+        ]
+
+
+class CompanyIndustrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyIndustry
+        fields = [
+            "id",
+            "name",
+        ]
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -23,6 +41,8 @@ class CompanySerializer(serializers.ModelSerializer):
             "how_you_found_us",
             "xrp_address",
             "xrp_seed",
+            "values",
+            "industry",
             "created_at",
             "updated_at",
         ]
@@ -38,6 +58,8 @@ class CompanyManagerSerializer(serializers.ModelSerializer):
 class CompanyReadSerializer(serializers.ModelSerializer):
     user = UserBaseSerializer()
     managers = CompanyManagerSerializer(many=True)
+    values = CompanyValueSerializer(many=True)
+    industry = CompanyIndustrySerializer()
 
     class Meta:
         model = Company
@@ -56,6 +78,8 @@ class CompanyReadSerializer(serializers.ModelSerializer):
             "how_you_found_us",
             "xrp_address",
             "managers",
+            "values",
+            "industry",
             "created_at",
             "updated_at",
         ]

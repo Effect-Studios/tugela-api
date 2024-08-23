@@ -45,6 +45,7 @@ class TagView(ModelViewSet):
 class JobView(ModelViewSet):
     queryset = Job.objects.all().order_by("created_at")
     serializer_class = JobSerializer
+    filterset_fields = ("company",)
 
     def get_permissions(self):
         if self.action in ["create", "update", "partial_update", "delete"]:
@@ -60,6 +61,7 @@ class JobView(ModelViewSet):
 class ApplicationView(ModelViewSet):
     queryset = Application.objects.all().order_by("created_at")
     serializer_class = ApplicationSerializer
+    filterset_fields = ("freelancer", "job", "status")
 
     def get_queryset(self):
         user = self.request.user
