@@ -38,6 +38,11 @@ class JobSerializer(serializers.ModelSerializer):
             "application_type",
             "status",
             "external_apply_link",
+            "role_type",
+            "responsibilities",
+            "experience",
+            "max_price",
+            "min_price",
             "created_at",
             "updated_at",
         )
@@ -64,6 +69,11 @@ class JobReadSerializer(serializers.ModelSerializer):
             "application_type",
             "status",
             "external_apply_link",
+            "role_type",
+            "responsibilities",
+            "experience",
+            "max_price",
+            "min_price",
             "created_at",
             "updated_at",
         )

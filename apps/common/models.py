@@ -39,6 +39,13 @@ class PriceType(models.TextChoices):
     PER_MONTH = "per_month", _("Per Month")
 
 
+class RoleType(models.TextChoices):
+    PART_TIME = "part_time", _("Part Time")
+    CONTRACT = "contract", _("Contract")
+    FULL_TIME = "full_time", _("Full Time")
+    INTERNSHIP = "internship", _("Internship")
+
+
 class HowYouFoundUs(models.TextChoices):
     FACEBOOK = "facebook", _("Facebook")
     TWITTER = "twitter", _("Twitter")

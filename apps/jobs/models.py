@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import models as base_models
-from apps.common.models import Currency, PriceType
+from apps.common.models import Currency, PriceType, RoleType
 
 # Create your models here.
 
@@ -36,6 +36,8 @@ class Job(base_models.BaseModel):
     )
     title = models.CharField(max_length=65)
     description = models.TextField(blank=True)
+    responsibilities = models.TextField(blank=True)
+    experience = models.TextField(blank=True)
     date = models.DateField(null=True)
     location = models.CharField(
         max_length=25, choices=LocationType.choices, default=LocationType.REMOTE
@@ -46,8 +48,11 @@ class Job(base_models.BaseModel):
     )
     tags = models.ManyToManyField(Tag, blank=True)
     skills = ArrayField(models.CharField(max_length=50, blank=True), default=list)
+    role_type = models.CharField(max_length=50, choices=RoleType.choices, blank=True)
     price_type = models.CharField(max_length=50, choices=PriceType.choices)
     price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    min_price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    max_price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     currency = models.CharField(
         max_length=20, choices=Currency.choices, default=Currency.XRP
     )
