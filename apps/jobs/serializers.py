@@ -11,7 +11,7 @@ from apps.common.xrp import (
     get_acc_info,
 )
 
-from .models import Application, Job, Tag
+from .models import Application, Job, JobBookmark, Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -244,3 +244,18 @@ class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
 
                 return instance
         return super().update(instance, validated_data)
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobBookmark
+        fields = "__all__"
+
+
+class BookmarkReadSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerBaseSerializer()
+    job = JobReadSerializer()
+
+    class Meta:
+        model = JobBookmark
+        fields = "__all__"

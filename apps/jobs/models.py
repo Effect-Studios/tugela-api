@@ -93,3 +93,16 @@ class Application(base_models.BaseModel):
 
     def __str__(self):
         return f"{self.job.title}::{self.freelancer.user.username}"
+
+
+class JobBookmark(base_models.BaseModel):
+    freelancer = models.ForeignKey(
+        "freelancers.Freelancer", on_delete=models.CASCADE, related_name="job_bookmarks"
+    )
+    job = models.ForeignKey("Job", on_delete=models.CASCADE, related_name="bookmarks")
+
+    class Meta:
+        ordering = ("created_at",)
+
+    def __str__(self):
+        return f"Bookmarked {self.job.title}::{self.freelancer.user.username}"

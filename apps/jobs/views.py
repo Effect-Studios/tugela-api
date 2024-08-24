@@ -9,11 +9,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.common.permissions import IsAdmin, IsCompanyManager, IsCompanyOwner
 
-from .models import Application, Job, Tag
+from .models import Application, Job, JobBookmark, Tag
 from .serializers import (
     ApplicationCreateSerializer,
     ApplicationReadSerializer,
     ApplicationSerializer,
+    BookmarkReadSerializer,
+    BookmarkSerializer,
     CreateEscrowSerializer,
     JobReadSerializer,
     JobSerializer,
@@ -134,3 +136,22 @@ class ApplicationView(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class BookmarkView(ModelViewSet):
+    queryset = JobBookmark.objects.all().order_by("created_at")
+    serializer_class = BookmarkSerializer
+    filterset_fields = ("freelancer", "job")
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            return self.queryset.none()
+        if user.is_staff or user.role == user.Roles.ADMIN:
+            return self.queryset
+        return self.queryset.filter(freelancer__user=user)
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve", "list"]:
+            self.serializer_class = BookmarkReadSerializer
+        return super().get_serializer_class()
