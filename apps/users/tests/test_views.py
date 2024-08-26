@@ -218,39 +218,39 @@ class TestAddress:
         assert resp_data["address_name"] == address.address_name
 
 
-class TestProfile:
-    def test_list_profile(self, api_client_auth, admin_user, user):
-        url = reverse("api:profile-list")
+# class TestProfile:
+#     def test_list_profile(self, api_client_auth, admin_user, user):
+#         url = reverse("api:profile-list")
 
-        client = api_client_auth(user=admin_user)
+#         client = api_client_auth(user=admin_user)
 
-        resp = client.get(url)
-        resp_data = resp.json()["data"]
+#         resp = client.get(url)
+#         resp_data = resp.json()["data"]
 
-        assert resp.status_code == status.HTTP_200_OK
-        assert len(resp_data["results"]) == 2
+#         assert resp.status_code == status.HTTP_200_OK
+#         assert len(resp_data["results"]) == 2
 
-    def test_update_profile(self, api_client_auth, admin_user, user):
-        url = reverse("api:profile-detail", args=(user.profile.id,))
-        client = api_client_auth(user=admin_user)
-        data = {"gender": "f"}
+#     def test_update_profile(self, api_client_auth, admin_user, user):
+#         url = reverse("api:profile-detail", args=(user.profile.id,))
+#         client = api_client_auth(user=admin_user)
+#         data = {"gender": "f"}
 
-        resp = client.patch(url, data=data)
-        resp_data = resp.json()["data"]
+#         resp = client.patch(url, data=data)
+#         resp_data = resp.json()["data"]
 
-        assert resp.status_code == status.HTTP_200_OK
-        assert resp_data["gender"] == data["gender"]
+#         assert resp.status_code == status.HTTP_200_OK
+#         assert resp_data["gender"] == data["gender"]
 
-    def test_read_profile(self, api_client_auth, user):
-        url = reverse("api:profile-detail", args=(user.profile.id,))
+#     def test_read_profile(self, api_client_auth, user):
+#         url = reverse("api:profile-detail", args=(user.profile.id,))
 
-        client = api_client_auth(user=user)
+#         client = api_client_auth(user=user)
 
-        resp = client.get(url)
-        resp_data = resp.json()["data"]
+#         resp = client.get(url)
+#         resp_data = resp.json()["data"]
 
-        assert resp.status_code == status.HTTP_200_OK
-        assert resp_data["user"] == str(user.id)
+#         assert resp.status_code == status.HTTP_200_OK
+#         assert resp_data["user"] == str(user.id)
 
 
 class TestCategory:

@@ -3,7 +3,11 @@ from rest_framework import serializers
 from xrpl.utils import xrp_to_drops
 
 from apps.common.models import Currency
-from apps.common.serializers import CompanyBaseSerializer, FreelancerBaseSerializer
+from apps.common.serializers import (
+    CompanyBaseSerializer,
+    FreelancerBaseSerializer,
+    SkillBaseSerializer,
+)
 from apps.common.xrp import (
     create_conditional_escrow,
     finish_conditional_escrow,
@@ -37,6 +41,7 @@ class JobSerializer(serializers.ModelSerializer):
             "currency",
             "application_type",
             "status",
+            "skills",
             "external_apply_link",
             "role_type",
             "responsibilities",
@@ -51,6 +56,7 @@ class JobSerializer(serializers.ModelSerializer):
 class JobReadSerializer(serializers.ModelSerializer):
     company = CompanyBaseSerializer()
     tags = TagSerializer(many=True)
+    skills = SkillBaseSerializer(many=True)
 
     class Meta:
         model = Job
@@ -68,6 +74,7 @@ class JobReadSerializer(serializers.ModelSerializer):
             "currency",
             "application_type",
             "status",
+            "skills",
             "external_apply_link",
             "role_type",
             "responsibilities",

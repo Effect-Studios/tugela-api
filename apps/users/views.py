@@ -5,20 +5,18 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from apps.common.permissions import IsAdmin
 
-from .models import Address, Category, Profile, Skill
+from .models import Address, Category, Skill
 from .serializers import (
     AddressSerializer,
     CategorySerializer,
     ChangePasswordSerializer,
     ForgotPasswordSerializer,
-    ProfileSerializer,
     ResetPasswordSerializer,
     SignupResponseSerializer,
     SignUpSerializer,
@@ -132,21 +130,21 @@ class AddressView(ModelViewSet):
         return self.queryset.filter(user=user)
 
 
-class ProfileView(ModelViewSet):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    filterset_fields = ("user",)
-    parser_classes = (FormParser, MultiPartParser)
+# class ProfileView(ModelViewSet):
+#     queryset = Profile.objects.all()
+#     serializer_class = ProfileSerializer
+#     filterset_fields = ("user",)
+#     parser_classes = (FormParser, MultiPartParser)
 
-    http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
+#     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_anonymous:
-            return self.queryset.none()
-        if user.is_staff:
-            return self.queryset
-        return self.queryset.filter(user=user)
+#     def get_queryset(self):
+#         user = self.request.user
+#         if user.is_anonymous:
+#             return self.queryset.none()
+#         if user.is_staff:
+#             return self.queryset
+#         return self.queryset.filter(user=user)
 
 
 class CategoryView(ModelViewSet):

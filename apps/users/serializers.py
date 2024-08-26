@@ -7,7 +7,7 @@ from apps.common.email import send_email
 from apps.common.serializers import CompanyBaseSerializer, FreelancerBaseSerializer
 from apps.common.utils import OTPUtils
 
-from .models import Address, Category, Profile, Skill
+from .models import Address, Category, Skill
 
 User = get_user_model()
 
@@ -137,34 +137,33 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    email = serializers.SerializerMethodField()
-    address_name = serializers.SerializerMethodField()
+# class ProfileSerializer(serializers.ModelSerializer):
+#     email = serializers.SerializerMethodField()
+#     address_name = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Profile
-        fields = (
-            "id",
-            "user",
-            "first_name",
-            "last_name",
-            "email",
-            "address_name",
-            "gender",
-            "dob",
-            "phone_number",
-            "profile_image",
-        )
+#     class Meta:
+#         model = Profile
+#         fields = (
+#             "id",
+#             "user",
+#             "first_name",
+#             "last_name",
+#             "email",
+#             "address_name",
+#             "gender",
+#             "dob",
+#             "phone_number",
+#             "profile_image",
+#         )
 
-    def get_email(self, profile) -> str:
-        return profile.user.email if profile.user else ""
+#     def get_email(self, profile) -> str:
+#         return profile.user.email if profile.user else ""
 
-    def get_address_name(self, profile) -> str:
-        return profile.address.address_name if profile.address else ""
+#     def get_address_name(self, profile) -> str:
+#         return profile.address.address_name if profile.address else ""
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(read_only=True)
     freelancer = FreelancerBaseSerializer(read_only=True)
     company = serializers.SerializerMethodField()
     # company = CompanyBaseSerializer(read_only=True, many=True)
@@ -177,7 +176,6 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "account_type",
             "role",
-            "profile",
             "freelancer",
             "company",
         ]
@@ -197,10 +195,10 @@ class UserSerializer(serializers.ModelSerializer):
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ["id", "name", "created_at", "updated_at"]
+        fields = ["id", "name"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name", "created_at", "updated_at"]
+        fields = ["id", "name"]

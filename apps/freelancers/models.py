@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator
 from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
@@ -11,11 +12,33 @@ from .managers import FreelancerManager
 # Create your models here.
 User = get_user_model()
 
+phone_regex = RegexValidator(
+    regex=r"^\+?1?\d{9,15}$",
+    message="Phone number must be entered in the format: '+999999999'. Up to 15 digits "
+    "allowed.",
+)
+
 
 class Freelancer(base_models.BaseModel):
+    class Gender(models.TextChoices):
+        MALE = "m", "Male"
+        FEMALE = "f", "Female"
+        OTHER = "o", "Other"
+
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="freelancer"
     )
+    fullname = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255, blank=True)
+    bio = models.CharField(blank=True)
+    location = models.CharField(max_length=255, blank=True)
+    gender = models.CharField(max_length=2, choices=Gender.choices, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    contact = models.CharField(max_length=255, blank=True)
+    website = models.CharField(max_length=255, blank=True)
+    phone_number = models.CharField(max_length=25, validators=[phone_regex], blank=True)
+    profile_image = models.ImageField(upload_to="freelancer", blank=True, null=True)
+    skills = models.ManyToManyField("users.Skill", blank=True)
     xrp_address = models.CharField(max_length=255, blank=True)
     xrp_seed = models.CharField(max_length=255, blank=True)
     how_you_found_us = models.CharField(

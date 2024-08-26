@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.users.forms import UserChangeForm, UserCreationForm
 
-from .models import Address, Category, Profile, Skill
+from .models import Address, Category, Skill
 
 User = get_user_model()
 
@@ -56,7 +56,7 @@ class UserAdmin(auth_admin.UserAdmin):
     ordering = ("email",)
 
 
-admin.site.register(Profile)
+# admin.site.register(Profile)
 admin.site.register(Address)
 admin.site.register(Skill)
 admin.site.register(Category)

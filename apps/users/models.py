@@ -5,7 +5,6 @@ from django.contrib.auth.models import (
 )
 from django.core.validators import RegexValidator
 from django.db import models
-from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import models as base_models
@@ -105,29 +104,29 @@ class Address(base_models.BaseModel):
         return f"{self.user.username}::{self.address_name}"
 
 
-class Profile(base_models.BaseModel):
-    class Gender(models.TextChoices):
-        MALE = "m", "Male"
-        FEMALE = "f", "Female"
-        OTHER = "o", "Other"
+# class Profile(base_models.BaseModel):
+#     class Gender(models.TextChoices):
+#         MALE = "m", "Male"
+#         FEMALE = "f", "Female"
+#         OTHER = "o", "Other"
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    other_names = models.CharField(max_length=255, blank=True)
-    address = models.ForeignKey(
-        Address, on_delete=models.SET_NULL, blank=True, null=True
-    )
-    gender = models.CharField(max_length=2, choices=Gender.choices)
-    dob = models.DateField(null=True, blank=True)
-    phone_number = models.CharField(max_length=25, validators=[phone_regex], blank=True)
-    profile_image = models.ImageField(upload_to="profile", blank=True, null=True)
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+#     first_name = models.CharField(max_length=255)
+#     last_name = models.CharField(max_length=255)
+#     other_names = models.CharField(max_length=255, blank=True)
+#     address = models.ForeignKey(
+#         Address, on_delete=models.SET_NULL, blank=True, null=True
+#     )
+#     gender = models.CharField(max_length=2, choices=Gender.choices)
+#     dob = models.DateField(null=True, blank=True)
+#     phone_number = models.CharField(max_length=25, validators=[phone_regex], blank=True)
+#     profile_image = models.ImageField(upload_to="profile", blank=True, null=True)
 
-    class Meta:
-        ordering = ("created_at",)
+#     class Meta:
+#         ordering = ("created_at",)
 
-    def __str__(self):
-        return f"{self.user.username or self.user.email}'s profile"
+#     def __str__(self):
+#         return f"{self.user.username or self.user.email}'s profile"
 
 
 class Category(base_models.BaseModel):
@@ -146,7 +145,7 @@ class Skill(base_models.BaseModel):
 
 # SIGNALS
 # ---------------------------------------------------
-@receiver(models.signals.post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+# @receiver(models.signals.post_save, sender=User)
+# def create_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)

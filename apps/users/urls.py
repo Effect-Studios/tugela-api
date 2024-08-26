@@ -7,7 +7,6 @@ from .views import (
     CategoryView,
     ChangePasswordView,
     ForgotPasswordView,
-    ProfileView,
     ResetPasswordView,
     SignUpView,
     SkillView,
@@ -17,7 +16,7 @@ from .views import (
 router = DefaultRouter()
 
 router.register("users", UserView, basename="users")
-router.register("profile", ProfileView, basename="profile")
+# router.register("profile", ProfileView, basename="profile")
 router.register("address", AddressView, basename="address")
 router.register("category", CategoryView, basename="category")
 router.register("skills", SkillView, basename="skill")

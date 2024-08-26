@@ -15,7 +15,6 @@ from apps.users.models import User
 from apps.users.tests.factories import (
     AddressFactory,
     CategoryFactory,
-    ProfileFactory,
     SkillFactory,
     UserFactory,
 )
@@ -23,7 +22,7 @@ from apps.users.tests.factories import (
 # User
 register(UserFactory)
 register(AddressFactory)
-register(ProfileFactory)
+# register(ProfileFactory)
 register(SkillFactory)
 register(CategoryFactory)
 # Freelancer

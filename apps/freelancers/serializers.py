@@ -16,8 +16,17 @@ class FreelancerSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
+            "title",
+            "fullname",
+            "bio",
+            "location",
+            "contact",
+            "website",
+            "phone_number",
+            "profile_image",
             "xrp_address",
             "xrp_seed",
+            "skills",
             "how_you_found_us",
             "total_applications",
             "accepted_applications",
@@ -143,6 +152,7 @@ class FreelancerReadSerializer(serializers.ModelSerializer):
     work_experiences = WorkExperienceSerializer(many=True)
     portfolio_item = PortfolioItemSerializer(many=True)
     services = ServiceSerializer(many=True)
+    skills = SkillSerializer(many=True)
     total_applications = serializers.SerializerMethodField()
     accepted_applications = serializers.SerializerMethodField()
     rejected_applications = serializers.SerializerMethodField()
@@ -152,6 +162,15 @@ class FreelancerReadSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
+            "title",
+            "fullname",
+            "bio",
+            "location",
+            "contact",
+            "website",
+            "phone_number",
+            "profile_image",
+            "skills",
             "xrp_address",
             "xrp_seed",
             "how_you_found_us",

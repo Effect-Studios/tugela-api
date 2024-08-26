@@ -3,27 +3,36 @@ from rest_framework import serializers
 
 from apps.companies.models import Company, CompanyIndustry, CompanyManager, CompanyValue
 from apps.freelancers.models import Freelancer
+from apps.users.models import Category, Skill
 
 User = get_user_model()
 
 
-class UserBaseSerializer(serializers.ModelSerializer):
-    first_name = serializers.SerializerMethodField()
-    last_name = serializers.SerializerMethodField()
+class SkillBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ["id", "name"]
 
+
+class CategoryBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
+
+
+class UserBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "username", "first_name", "last_name"]
-
-    def get_first_name(self, obj):
-        return obj.profile.first_name
-
-    def get_last_name(self, obj):
-        return obj.profile.last_name
+        fields = [
+            "id",
+            "email",
+            "username",
+        ]
 
 
 class FreelancerBaseSerializer(serializers.ModelSerializer):
     user = UserBaseSerializer()
+    skills = SkillBaseSerializer(many=True)
     total_applications = serializers.SerializerMethodField()
     accepted_applications = serializers.SerializerMethodField()
     rejected_applications = serializers.SerializerMethodField()
@@ -33,6 +42,17 @@ class FreelancerBaseSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
+            "fullname",
+            "title",
+            "bio",
+            "location",
+            "gender",
+            "dob",
+            "contact",
+            "website",
+            "phone_number",
+            "profile_image",
+            "skills",
             "xrp_address",
             "xrp_seed",
             "how_you_found_us",
