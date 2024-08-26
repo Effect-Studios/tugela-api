@@ -188,7 +188,10 @@ class UserSerializer(serializers.ModelSerializer):
     )
     def get_company(self, obj):
         company = obj.company.first()
-        return CompanyBaseSerializer(company).data
+        if company:
+            return CompanyBaseSerializer(company).data
+        else:
+            return None
 
 
 class SkillSerializer(serializers.ModelSerializer):

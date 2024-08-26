@@ -76,6 +76,9 @@ class CompanySerializer(serializers.ModelSerializer):
     def get_completed_jobs(self, obj) -> int:
         return getattr(obj, "completed_jobs", 0)
 
+    # def to_representation(self, instance):
+    #     return CompanyBaseSerializer(instance).data
+
 
 class CompanyManagerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -125,16 +128,16 @@ class CompanyReadSerializer(serializers.ModelSerializer):
         ]
 
     def get_total_applications(self, obj) -> int:
-        return obj.total_applications or 0
+        return getattr(obj, "total_applications", 0)
 
     def get_active_jobs(self, obj) -> int:
-        return obj.active_jobs or 0
+        return getattr(obj, "active_jobs", 0)
 
     def get_total_jobs(self, obj) -> int:
-        return obj.total_jobs or 0
+        return getattr(obj, "total_jobs", 0)
 
     def get_assigned_jobs(self, obj) -> int:
-        return obj.assigned_jobs or 0
+        return getattr(obj, "assigned_jobs", 0)
 
     def get_completed_jobs(self, obj) -> int:
-        return obj.completed_jobs or 0
+        return getattr(obj, "completed_jobs", 0)
