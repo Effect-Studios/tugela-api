@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.companies.models import Company, CompanyIndustry, CompanyManager, CompanyValue
-from apps.freelancers.models import Freelancer
+from apps.freelancers.models import Freelancer, PortfolioItem, Service, WorkExperience
 from apps.users.models import Category, Skill
 
 User = get_user_model()
@@ -30,9 +30,63 @@ class UserBaseSerializer(serializers.ModelSerializer):
         ]
 
 
+class WorkExperienceBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkExperience
+        fields = [
+            "id",
+            "freelancer",
+            "job_title",
+            "job_description",
+            "company_name",
+            "currently_working_here",
+            "start_date",
+            "end_date",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class PortfolioItemBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioItem
+        fields = [
+            "id",
+            "title",
+            "description",
+            "project_url",
+            "video_url",
+            "start_date",
+            "end_date",
+            "portfolio_file",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class ServiceBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            "id",
+            "title",
+            "description",
+            "delivery_time",
+            "starting_price",
+            "currency",
+            "price_type",
+            "service_image",
+            "created_at",
+            "updated_at",
+        ]
+
+
 class FreelancerBaseSerializer(serializers.ModelSerializer):
     user = UserBaseSerializer()
     skills = SkillBaseSerializer(many=True)
+    work_experiences = WorkExperienceBaseSerializer(many=True)
+    portfolio_item = PortfolioItemBaseSerializer(many=True)
+    services = ServiceBaseSerializer(many=True)
     total_applications = serializers.SerializerMethodField()
     accepted_applications = serializers.SerializerMethodField()
     rejected_applications = serializers.SerializerMethodField()
@@ -53,6 +107,9 @@ class FreelancerBaseSerializer(serializers.ModelSerializer):
             "phone_number",
             "profile_image",
             "skills",
+            "work_experiences",
+            "portfolio_item",
+            "services",
             "xrp_address",
             "xrp_seed",
             "how_you_found_us",
