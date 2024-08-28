@@ -59,9 +59,9 @@ class WorkExperience(base_models.BaseModel):
     freelancer = models.ForeignKey(
         "Freelancer", on_delete=models.CASCADE, related_name="work_experiences"
     )
-    job_title = models.CharField(max_length=50)
+    job_title = models.CharField(max_length=100)
     job_description = models.TextField(blank=True)
-    company_name = models.CharField(max_length=50)
+    company_name = models.CharField(max_length=100)
     currently_working_here = models.BooleanField(default=False)
     start_date = models.DateField()
     end_date = models.DateField(null=True)
@@ -78,12 +78,12 @@ class PortfolioItem(base_models.BaseModel):
     freelancer = models.ForeignKey(
         "Freelancer", on_delete=models.CASCADE, related_name="portfolio_item"
     )
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     category = models.ForeignKey("users.Category", on_delete=models.SET_NULL, null=True)
     skills = models.ManyToManyField("users.Skill", blank=True)
-    project_url = models.CharField(max_length=100, blank=True)
-    video_url = models.CharField(max_length=100, blank=True)
+    project_url = models.CharField(max_length=500, blank=True)
+    video_url = models.CharField(max_length=500, blank=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True)
     portfolio_file = models.FileField(upload_to="portfolio", blank=True, null=True)
@@ -100,7 +100,7 @@ class Service(base_models.BaseModel):
     freelancer = models.ForeignKey(
         "Freelancer", on_delete=models.CASCADE, related_name="services"
     )
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     category = models.ForeignKey("users.Category", on_delete=models.SET_NULL, null=True)
     skills = models.ManyToManyField("users.Skill", blank=True)
