@@ -18,7 +18,8 @@ from .serializers import (
 class FreelancerView(ModelViewSet):
     queryset = Freelancer.objects.all().order_by("created_at")
     serializer_class = FreelancerSerializer
-    filterset_fields = ("user",)
+    filterset_fields = ("user", "gender")
+    parser_classes = (JSONParser, FormParser, MultiPartParser)
 
     http_method_names = [m for m in ModelViewSet.http_method_names if m not in ["put"]]
     ordering = ["created_at"]
