@@ -34,7 +34,7 @@ class FreelancerView(ModelViewSet):
         return self.queryset
 
     def get_serializer_class(self):
-        if self.action == "retrieve":
+        if self.action in ["retrieve", "list"]:
             self.serializer_class = FreelancerReadSerializer
         return super().get_serializer_class()
 

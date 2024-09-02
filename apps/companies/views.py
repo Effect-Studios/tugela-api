@@ -29,10 +29,11 @@ class CompanyView(ModelViewSet):
             return self.queryset.none()
         if user.is_staff or user.role == user.Roles.ADMIN:
             return self.queryset
-        return self.queryset.filter(user=user)
+        # return self.queryset.filter(user=user)
+        return self.queryset
 
     def get_serializer_class(self):
-        if self.action in ["retrieve"]:
+        if self.action in ["retrieve", "list"]:
             self.serializer_class = CompanyReadSerializer
         return super().get_serializer_class()
 

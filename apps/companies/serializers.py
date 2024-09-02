@@ -29,7 +29,6 @@ class CompanySerializer(serializers.ModelSerializer):
     assigned_jobs = serializers.SerializerMethodField()
     completed_jobs = serializers.SerializerMethodField()
     total_jobs = serializers.SerializerMethodField()
-    industry = CompanyIndustrySerializer()
 
     class Meta:
         model = Company
