@@ -26,6 +26,13 @@ CACHES = {
 STATIC_URL = "static/"
 STATIC_ROOT = "staticfiles"
 
+# MEDIA
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = str(APPS_DIR / "media")  # noqa F405
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+MEDIA_URL = "/media/"
+
 # EMAIL
 # ------------------------------------------------------------------------------
 EMAIL_BACKEND = env(
