@@ -50,6 +50,18 @@ class Freelancer(base_models.BaseModel):
     class Meta:
         ordering = ("created_at",)
 
+    @property
+    def total_applications(self):
+        return self.applications.count()
+
+    @property
+    def accepted_applications(self):
+        return self.applications.filter(status="accepted").count()
+
+    @property
+    def rejected_applications(self):
+        return self.applications.filter(status="rejected").count()
+
     def __str__(self):
         return self.user.username or self.user.email
 

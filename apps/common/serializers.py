@@ -87,9 +87,9 @@ class FreelancerBaseSerializer(serializers.ModelSerializer):
     work_experiences = WorkExperienceBaseSerializer(many=True)
     portfolio_item = PortfolioItemBaseSerializer(many=True)
     services = ServiceBaseSerializer(many=True)
-    total_applications = serializers.SerializerMethodField()
-    accepted_applications = serializers.SerializerMethodField()
-    rejected_applications = serializers.SerializerMethodField()
+    # total_applications = serializers.SerializerMethodField()
+    # accepted_applications = serializers.SerializerMethodField()
+    # rejected_applications = serializers.SerializerMethodField()
 
     class Meta:
         model = Freelancer
@@ -119,14 +119,15 @@ class FreelancerBaseSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {"xrp_seed": {"write_only": True}}
 
-    def get_total_applications(self, obj) -> int:
-        return getattr(obj, "total_applications", 0)
+    # def get_total_applications(self, obj) -> int:
+    #     print("debug: ", vars(obj))
+    #     return getattr(obj, "total_applications", 0)
 
-    def get_accepted_applications(self, obj) -> int:
-        return getattr(obj, "accepted_applications", 0)
+    # def get_accepted_applications(self, obj) -> int:
+    #     return getattr(obj, "accepted_applications", 0)
 
-    def get_rejected_applications(self, obj) -> int:
-        return getattr(obj, "rejected_applications", 0)
+    # def get_rejected_applications(self, obj) -> int:
+    #     return getattr(obj, "rejected_applications", 0)
 
 
 class CompanyManagerBaseSerializer(serializers.ModelSerializer):

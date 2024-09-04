@@ -7,9 +7,9 @@ from .models import Freelancer, PortfolioItem, Service, WorkExperience
 
 
 class FreelancerSerializer(serializers.ModelSerializer):
-    total_applications = serializers.SerializerMethodField()
-    accepted_applications = serializers.SerializerMethodField()
-    rejected_applications = serializers.SerializerMethodField()
+    # total_applications = serializers.SerializerMethodField()
+    # accepted_applications = serializers.SerializerMethodField()
+    # rejected_applications = serializers.SerializerMethodField()
 
     class Meta:
         model = Freelancer
@@ -34,14 +34,14 @@ class FreelancerSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {"xrp_seed": {"write_only": True}}
 
-    def get_total_applications(self, obj) -> int:
-        return getattr(obj, "total_applications", 0)
+    # def get_total_applications(self, obj) -> int:
+    #     return getattr(obj, "total_applications", 0)
 
-    def get_accepted_applications(self, obj) -> int:
-        return getattr(obj, "accepted_applications", 0)
+    # def get_accepted_applications(self, obj) -> int:
+    #     return getattr(obj, "accepted_applications", 0)
 
-    def get_rejected_applications(self, obj) -> int:
-        return getattr(obj, "rejected_applications", 0)
+    # def get_rejected_applications(self, obj) -> int:
+    #     return getattr(obj, "rejected_applications", 0)
 
 
 class WorkExperienceSerializer(serializers.ModelSerializer):
@@ -153,9 +153,9 @@ class FreelancerReadSerializer(serializers.ModelSerializer):
     portfolio_item = PortfolioItemSerializer(many=True)
     services = ServiceSerializer(many=True)
     skills = SkillSerializer(many=True)
-    total_applications = serializers.SerializerMethodField()
-    accepted_applications = serializers.SerializerMethodField()
-    rejected_applications = serializers.SerializerMethodField()
+    # total_applications = serializers.SerializerMethodField()
+    # accepted_applications = serializers.SerializerMethodField()
+    # rejected_applications = serializers.SerializerMethodField()
 
     class Meta:
         model = Freelancer
@@ -183,11 +183,11 @@ class FreelancerReadSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {"xrp_seed": {"write_only": True}}
 
-    def get_total_applications(self, obj) -> int:
-        return obj.total_applications or 0
+    # def get_total_applications(self, obj) -> int:
+    #     return obj.total_applications or 0
 
-    def get_accepted_applications(self, obj) -> int:
-        return obj.accepted_applications or 0
+    # def get_accepted_applications(self, obj) -> int:
+    #     return obj.accepted_applications or 0
 
-    def get_rejected_applications(self, obj) -> int:
-        return obj.rejected_applications or 0
+    # def get_rejected_applications(self, obj) -> int:
+    #     return obj.rejected_applications or 0

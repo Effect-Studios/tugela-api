@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.dispatch import receiver
@@ -60,6 +61,27 @@ class Company(base_models.BaseModel):
 
     class Meta:
         ordering = ("created_at",)
+
+    @property
+    def total_applications(self) -> int:
+        applications = apps.get_model("jobs.Application")
+        return applications.objects.filter(job__company=self).count()
+
+    @property
+    def active_jobs(self) -> int:
+        return self.jobs.filter(status="active").count()
+
+    @property
+    def total_jobs(self) -> int:
+        return self.jobs.count()
+
+    @property
+    def assigned_jobs(self) -> int:
+        return self.jobs.filter(status="assigned").count()
+
+    @property
+    def completed_jobs(self) -> int:
+        return self.jobs.filter(status="completed").count()
 
     def __str__(self):
         return f"{self.name}"

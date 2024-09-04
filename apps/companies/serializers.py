@@ -91,11 +91,11 @@ class CompanyReadSerializer(serializers.ModelSerializer):
     managers = CompanyManagerSerializer(many=True)
     values = CompanyValueSerializer(many=True)
     industry = CompanyIndustrySerializer()
-    total_applications = serializers.SerializerMethodField()
-    active_jobs = serializers.SerializerMethodField()
-    assigned_jobs = serializers.SerializerMethodField()
-    completed_jobs = serializers.SerializerMethodField()
-    total_jobs = serializers.SerializerMethodField()
+    total_applications = serializers.IntegerField()
+    active_jobs = serializers.IntegerField()
+    assigned_jobs = serializers.IntegerField()
+    completed_jobs = serializers.IntegerField()
+    total_jobs = serializers.IntegerField()
 
     class Meta:
         model = Company
@@ -127,17 +127,17 @@ class CompanyReadSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
-    def get_total_applications(self, obj) -> int:
-        return getattr(obj, "total_applications", 0)
+    # def get_total_applications(self, obj) -> int:
+    #     return getattr(obj, "total_applications", 0)
 
-    def get_active_jobs(self, obj) -> int:
-        return getattr(obj, "active_jobs", 0)
+    # def get_active_jobs(self, obj) -> int:
+    #     return getattr(obj, "active_jobs", 0)
 
-    def get_total_jobs(self, obj) -> int:
-        return getattr(obj, "total_jobs", 0)
+    # def get_total_jobs(self, obj) -> int:
+    #     return getattr(obj, "total_jobs", 0)
 
-    def get_assigned_jobs(self, obj) -> int:
-        return getattr(obj, "assigned_jobs", 0)
+    # def get_assigned_jobs(self, obj) -> int:
+    #     return getattr(obj, "assigned_jobs", 0)
 
-    def get_completed_jobs(self, obj) -> int:
-        return getattr(obj, "completed_jobs", 0)
+    # def get_completed_jobs(self, obj) -> int:
+    #     return getattr(obj, "completed_jobs", 0)
