@@ -18,6 +18,7 @@ from .serializers import (
 class FreelancerView(ModelViewSet):
     queryset = Freelancer.objects.all().order_by("created_at")
     serializer_class = FreelancerSerializer
+    search_fields = ("fullname", "title", "bio", "skills__name")
     filterset_fields = ("user", "gender")
     parser_classes = (JSONParser, FormParser, MultiPartParser)
 

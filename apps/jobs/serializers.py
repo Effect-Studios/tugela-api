@@ -104,7 +104,7 @@ class ApplicationCreateSerializer(serializers.ModelSerializer):
 
         # check if freelancer has xrp address
         if not freelancer.xrp_address:
-            raise serializers.ValidationError("Update xrp address")
+            raise serializers.ValidationError({"message": "Update xrp address"})
 
         return super().create(validated_data)
 
@@ -129,18 +129,22 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
         if status == Application.Status.ACCEPTED:
             job = data.job
             if job.escrow_sequence and job.escrow_condition and job.escrow_fulfillment:
-                raise serializers.ValidationError("Escrow already created")
+                raise serializers.ValidationError({"message": "Escrow already created"})
 
             company = job.company
             freelancer = data.freelancer
 
             # check if company has xrp address and seed
             if not company.xrp_address and not company.xrp_seed:
-                raise serializers.ValidationError("Update xrp address and seed")
+                raise serializers.ValidationError(
+                    {"message": "Update xrp address and seed"}
+                )
 
             # check currency
             if job.currency != Currency.XRP:
-                raise serializers.ValidationError("Price should be in Ripple")
+                raise serializers.ValidationError(
+                    {"message": "Price should be in Ripple"}
+                )
 
             # check sufficient balance
             address = company.xrp_address
@@ -152,7 +156,9 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
             res = get_acc_info(address)
             acc_bal = int(res["Balance"])
             if price_n_reserve_in_drops > acc_bal:
-                raise serializers.ValidationError("Insufficient Balance to create job")
+                raise serializers.ValidationError(
+                    {"message": "Insufficient Balance to create job"}
+                )
 
             # Create escrow for Job
             condition, fulfillment = generate_condition()
@@ -176,8 +182,9 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
                     "updated_at",
                 ]
             )
-
-        return {"message": "Escrow created"}
+            return {"message": "Escrow created"}
+        else:
+            raise serializers.ValidationError({"message": "Application not accepted"})
 
 
 class RedeemEscrowSerializer(serializers.ModelSerializer):
@@ -202,7 +209,7 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
             condition = job.escrow_condition
             fulfillment = job.escrow_fulfillment
             if not sequence or not condition or not fulfillment:
-                raise serializers.ValidationError("Escrow not created")
+                raise serializers.ValidationError({"message": "Escrow not created"})
 
             # redeem escrow for Job
             company = job.company
@@ -212,8 +219,8 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
                 company_seed, company_address, sequence, condition, fulfillment
             )
             return {"message": "Escrow redeemed"}
-
-        return {"message": "Escrow condition not met"}
+        else:
+            raise serializers.ValidationError({"message": "Escrow condition not met"})
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -250,6 +257,8 @@ class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
                     instance.save(update_fields=["status", "updated_at"])
 
                 return instance
+            else:
+                raise serializers.ValidationError({"message": "Job cannot be assigned"})
         return super().update(instance, validated_data)
 
 

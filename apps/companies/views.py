@@ -18,6 +18,7 @@ from .serializers import (
 class CompanyView(ModelViewSet):
     queryset = Company.objects.all().order_by("created_at")
     serializer_class = CompanySerializer
+    search_fields = ("name", "description", "email")
     filterset_fields = ("user", "company_size", "organization_type")
     parser_classes = [FormParser, MultiPartParser, JSONParser]
 

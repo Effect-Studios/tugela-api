@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.common.permissions import IsAdmin, IsCompanyManager, IsCompanyOwner
 
+from .filters import ApplicationFilter
 from .models import Application, Job, JobBookmark, Tag
 from .serializers import (
     ApplicationCreateSerializer,
@@ -47,7 +48,8 @@ class TagView(ModelViewSet):
 class JobView(ModelViewSet):
     queryset = Job.objects.all().order_by("created_at")
     serializer_class = JobSerializer
-    filterset_fields = ("company",)
+    search_fields = ("title", "description", "skills__name", "company__name")
+    filterset_fields = ("company", "status")
 
     def get_permissions(self):
         if self.action in ["create", "update", "partial_update", "delete"]:
@@ -63,7 +65,7 @@ class JobView(ModelViewSet):
 class ApplicationView(ModelViewSet):
     queryset = Application.objects.all().order_by("created_at")
     serializer_class = ApplicationSerializer
-    filterset_fields = ("freelancer", "job", "status")
+    filterset_class = ApplicationFilter
 
     def get_queryset(self):
         user = self.request.user
