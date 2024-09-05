@@ -14,6 +14,7 @@ from .serializers import (
     CountrySerializer,
     CurrencyQueryParamSerializer,
     CurrencySerializer,
+    XRPBalanceSerializer,
 )
 
 # Create your views here.
@@ -108,20 +109,22 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # TODO: implement update currency endpoint
-
     # Get Ripple balance
     # -----------------------------------------------------------------------------------
-    # @swagger_auto_schema(
-    #     method="POST",
-    #     request_body=,
-    #     responses={200: "OK"},
-    # )
-    # @action(
-    #     detail=False,
-    #     permission_classes=[AllowAny],
-    #     methods=["POST"],
-    #     url_path="get-balance",
-    # )
-    # def get_balance(self, request, *args, **kwargs):
-    #  	pass
+    @swagger_auto_schema(
+        method="POST",
+        request_body=XRPBalanceSerializer,
+        responses={200: XRPBalanceSerializer},
+    )
+    @action(
+        detail=False,
+        permission_classes=[AllowAny],
+        methods=["POST"],
+        url_path="get-balance",
+    )
+    def get_balance(self, request, *args, **kwargs):
+        serializer = XRPBalanceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        res = serializer.save()
+
+        return Response(res, status=status.HTTP_200_OK)
