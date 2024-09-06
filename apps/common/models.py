@@ -37,6 +37,7 @@ class PriceType(models.TextChoices):
     PER_HOUR = "per_hour", _("Per Hour")
     PER_WEEK = "per_week", _("Per Week")
     PER_MONTH = "per_month", _("Per Month")
+    PER_YEAR = "per_year", _("Per Year")
 
 
 class RoleType(models.TextChoices):
