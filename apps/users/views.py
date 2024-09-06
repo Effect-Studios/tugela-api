@@ -57,6 +57,8 @@ class UserView(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericView
         user = self.request.user
         if user.is_anonymous:
             return self.queryset.none()
+        if user.is_staff or user.role == user.Roles.ADMIN:
+            return self.queryset
         return self.queryset.filter(id=user.id)
 
     @swagger_auto_schema(method="GET", responses={200: UserSerializer})

@@ -56,6 +56,7 @@ class Company(base_models.BaseModel):
     )
     xrp_address = models.CharField(max_length=255, blank=True)
     xrp_seed = models.CharField(max_length=255, blank=True)
+    visibility = models.BooleanField(default=True)
 
     objects = CompanyManager()
 

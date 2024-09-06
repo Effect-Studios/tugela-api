@@ -44,6 +44,7 @@ class Freelancer(base_models.BaseModel):
     how_you_found_us = models.CharField(
         max_length=100, choices=HowYouFoundUs.choices, default=HowYouFoundUs.OTHER
     )
+    visibility = models.BooleanField(default=True)
 
     objects = FreelancerManager()
 

@@ -56,6 +56,7 @@ class CompanySerializer(serializers.ModelSerializer):
             "assigned_jobs",
             "completed_jobs",
             "total_applications",
+            "visibility",
             "created_at",
             "updated_at",
         ]
@@ -123,6 +124,7 @@ class CompanyReadSerializer(serializers.ModelSerializer):
             "assigned_jobs",
             "completed_jobs",
             "total_applications",
+            "visibility",
             "created_at",
             "updated_at",
         ]

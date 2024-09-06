@@ -110,6 +110,7 @@ class FreelancerBaseSerializer(serializers.ModelSerializer):
             "work_experiences",
             "portfolio_item",
             "services",
+            "visibility",
             "xrp_address",
             "xrp_seed",
             "how_you_found_us",
@@ -190,6 +191,7 @@ class CompanyBaseSerializer(serializers.ModelSerializer):
             "assigned_jobs",
             "completed_jobs",
             "total_applications",
+            "visibility",
             "created_at",
             "updated_at",
         ]
