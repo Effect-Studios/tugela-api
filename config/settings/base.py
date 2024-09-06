@@ -274,6 +274,13 @@ GOOGLE_CLOUD_TASKS_ON_GAE = env.bool("GOOGLE_CLOUD_TASKS_ON_GAE", default=False)
 GAE_SERVICE = env("GAE_SERVICE", default="default")
 
 
+SECURE_REDIRECT_EXEMPT = [
+    r"^api/notifications/send-email/$",
+    r"^api/notifications/send-notification/$",
+    r"^api/notifications/send-sms/$",
+]
+
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 # this is the default life span of short code (5mins)
