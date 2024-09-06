@@ -14,6 +14,7 @@ from apps.common.xrp import (
     generate_condition,
     get_acc_info,
 )
+from apps.notifications.utils import fcm_notify
 
 from .models import Application, Job, JobBookmark, Tag
 
@@ -255,6 +256,12 @@ class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
 
                     job.save(update_fields=["status", "updated_at"])
                     instance.save(update_fields=["status", "updated_at"])
+
+                # send in app notification
+                title = "Application Approved"
+                body = f"Your application for {job.title} at {job.company} has been accepted"
+                user = instance.freelancer.user
+                fcm_notify(user, title, body)
 
                 return instance
             else:

@@ -21,7 +21,7 @@ def send_email(to_email, subject, message, fail_silently=True):
 
 
 def send_email_template(
-    user, template_id: str, dynamic_template_data: dict = None, fail_silently=True
+    email, template_id: str, dynamic_template_data: dict = None, fail_silently=True
 ):
     """
     Helper to send emails system wide.
@@ -31,7 +31,7 @@ def send_email_template(
     """
     msg = EmailMessage(
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[user.email],
+        to=[email],
         reply_to=[settings.DEFAULT_FROM_EMAIL],
     )
     msg.template_id = template_id

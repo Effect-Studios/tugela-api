@@ -56,6 +56,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "django_filters",
     "drf_yasg",
+    "fcm_django",
 ]
 
 LOCAL_APPS = [
@@ -64,6 +65,7 @@ LOCAL_APPS = [
     "apps.companies.apps.CompaniesConfig",
     "apps.jobs.apps.JobsConfig",
     "apps.extras.apps.ExtrasConfig",
+    "apps.notifications.apps.NotificationsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

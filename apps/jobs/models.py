@@ -1,8 +1,10 @@
 from django.db import models
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import models as base_models
 from apps.common.models import Currency, PriceType, RoleType
+from apps.notifications.utils import fcm_notify_bulk
 
 # Create your models here.
 
@@ -105,3 +107,24 @@ class JobBookmark(base_models.BaseModel):
 
     def __str__(self):
         return f"Bookmarked {self.job.title}::{self.freelancer.user.username}"
+
+
+# SIGNALS
+# ---------------------------------------------------
+@receiver(models.signals.post_save, sender=Application)
+def set_owner_role(sender, instance, created, **kwargs):
+    from fcm_django.models import FCMDevice
+
+    if created:
+        freelancer = instance.freelancer
+        job = instance.job
+        company = job.company
+
+        # send notification
+        Q = models.Q
+        devices = FCMDevice.objects.filter(
+            Q(user__companies_managed__company=company) | Q(user__company=company)
+        )
+        title = "Job Application"
+        body = f"{freelancer.fullname or 'User'} applied for the Job titled {job.title}"
+        fcm_notify_bulk(title, body, devices=devices)

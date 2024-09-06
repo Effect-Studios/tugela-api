@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import BasePermission
 
@@ -59,3 +60,19 @@ class IsCompanyOwner(BasePermission):
             if hasattr(obj, "company")
             else obj in request.user.company.all()
         )
+
+
+class IsTask(BasePermission):
+    def has_permission(self, request, view):
+        if not settings.GOOGLE_CLOUD_TASKS_ON_GAE or request.META.get(
+            "HTTP_X_APPENGINE_QUEUENAME"
+        ):
+            return True
+        return False
+
+
+class IsCron(BasePermission):
+    def has_permission(self, request, view):
+        if request.headers.get("X-Appengine-Cron"):
+            return True
+        return False
