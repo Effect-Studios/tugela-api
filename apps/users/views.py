@@ -14,6 +14,7 @@ from apps.common.permissions import IsAdmin
 from .models import Address, Category, Skill
 from .serializers import (
     AddressSerializer,
+    AdminUserCreateSerializer,
     CategorySerializer,
     ChangePasswordSerializer,
     ForgotPasswordSerializer,
@@ -66,6 +67,24 @@ class UserView(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericView
     def me(self, request):
         serializer = UserSerializer(request.user, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+    @swagger_auto_schema(
+        method="POST",
+        request_body=AdminUserCreateSerializer,
+        responses={200: UserSerializer},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAdmin],
+        url_path="create-user",
+    )
+    def create_user(self, request):
+        serializer = AdminUserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        res = UserSerializer(user)
+        return Response(status=status.HTTP_200_OK, data=res.data)
 
 
 class SignUpView(CreateAPIView):

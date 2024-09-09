@@ -163,6 +163,13 @@ class AddressSerializer(serializers.ModelSerializer):
 #         return profile.address.address_name if profile.address else ""
 
 
+class AdminUserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "username", "password", "account_type", "role"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+
 class UserSerializer(serializers.ModelSerializer):
     freelancer = FreelancerBaseSerializer(read_only=True)
     company = serializers.SerializerMethodField()

@@ -1,7 +1,7 @@
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 
-from apps.common.permissions import IsOwner
+from apps.common.permissions import IsAdmin, IsOwner
 
 from .models import Freelancer, PortfolioItem, Service, WorkExperience
 from .serializers import (
@@ -41,7 +41,7 @@ class FreelancerView(ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["update", "partial_update", "delete"]:
-            self.permission_classes = [IsOwner]
+            self.permission_classes = [IsOwner | IsAdmin]
         return super().get_permissions()
 
 
