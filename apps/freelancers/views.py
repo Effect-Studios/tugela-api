@@ -1,7 +1,9 @@
+from django.conf import settings
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 
 from apps.common.permissions import IsAdmin, IsOwner
+from apps.common.xrp import get_account, send_xrp
 
 from .models import Freelancer, PortfolioItem, Service, WorkExperience
 from .serializers import (
@@ -45,11 +47,16 @@ class FreelancerView(ModelViewSet):
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        from apps.common.xrp import get_account
-
         # create xrp account
         wallet = get_account("")
         serializer.save(xrp_seed=wallet.seed, xrp_address=wallet.address)
+
+        # fund account
+        if settings.XRP_LIVE:
+            xrp_main_seed = settings.XRP_MAIN_SEED
+            xrp_amount = 10
+            acc_to_fund = wallet.address
+            send_xrp(xrp_main_seed, xrp_amount, acc_to_fund)
 
 
 class WorkExperienceView(ModelViewSet):
