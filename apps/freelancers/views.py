@@ -44,6 +44,13 @@ class FreelancerView(ModelViewSet):
             self.permission_classes = [IsOwner | IsAdmin]
         return super().get_permissions()
 
+    def perform_create(self, serializer):
+        from apps.common.xrp import get_account
+
+        # create xrp account
+        wallet = get_account("")
+        serializer.save(xrp_seed=wallet.seed, xrp_address=wallet.address)
+
 
 class WorkExperienceView(ModelViewSet):
     queryset = WorkExperience.objects.all()

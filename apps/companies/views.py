@@ -43,6 +43,13 @@ class CompanyView(ModelViewSet):
             self.permission_classes = [IsCompanyOwner | IsAdmin]
         return super().get_permissions()
 
+    def perform_create(self, serializer):
+        from apps.common.xrp import get_account
+
+        # create xrp account
+        wallet = get_account("")
+        serializer.save(xrp_seed=wallet.seed, xrp_address=wallet.address)
+
 
 class CompanyManagerView(ModelViewSet):
     queryset = CompanyManager.objects.all().order_by("created_at")

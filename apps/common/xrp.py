@@ -3,22 +3,29 @@ from os import urandom
 
 import xrpl
 from cryptoconditions import PreimageSha256
+from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests import AccountObjects
 from xrpl.models.transactions import EscrowCreate, EscrowFinish
 from xrpl.wallet import Wallet
 
-testnet_url = "https://s.devnet.rippletest.net:51234/"
-# testnet_url = "https://s.altnet.rippletest.net:51234"
-mainnet_url = "https://xrplcluster.com/"
+XRP_LIVE = settings.XRP_LIVE
+if XRP_LIVE:
+    xrp_url = "https://xrplcluster.com/"
+else:
+    xrp_url = "https://s.devnet.rippletest.net:51234/"
+    # xrp_url = "https://s.altnet.rippletest.net:51234"
 
 
 def get_account(seed):
     """get_account"""
-    client = xrpl.clients.JsonRpcClient(testnet_url)
+    client = xrpl.clients.JsonRpcClient(xrp_url)
     if seed == "":
-        new_wallet = xrpl.wallet.generate_faucet_wallet(client)
+        if XRP_LIVE:
+            new_wallet = xrpl.wallet.Wallet.create()
+        else:
+            new_wallet = xrpl.wallet.generate_faucet_wallet(client)
     else:
         new_wallet = xrpl.wallet.Wallet.from_seed(seed)
     return new_wallet
@@ -26,7 +33,7 @@ def get_account(seed):
 
 def get_account_info(accountId):
     """get_account_info"""
-    client = xrpl.clients.JsonRpcClient(testnet_url)
+    client = xrpl.clients.JsonRpcClient(xrp_url)
     acct_info = xrpl.models.requests.account_info.AccountInfo(
         account=accountId, ledger_index="validated"
     )
@@ -36,13 +43,13 @@ def get_account_info(accountId):
 
 
 def get_acc_info(addr):
-    client = xrpl.clients.JsonRpcClient(testnet_url)
+    client = xrpl.clients.JsonRpcClient(xrp_url)
     return xrpl.account.get_account_root(addr, client)
 
 
 def send_xrp(seed, amount, destination):
     sending_wallet = xrpl.wallet.Wallet.from_seed(seed)
-    client = xrpl.clients.JsonRpcClient(testnet_url)
+    client = xrpl.clients.JsonRpcClient(xrp_url)
     payment = xrpl.models.transactions.Payment(
         account=sending_wallet.address,
         amount=xrpl.utils.xrp_to_drops(int(amount)),
@@ -76,7 +83,7 @@ def add_seconds(numOfSeconds):
 
 def create_conditional_escrow(seed, amount, destination, cancel, condition):
     wallet = Wallet.from_seed(seed)
-    client = JsonRpcClient(testnet_url)
+    client = JsonRpcClient(xrp_url)
     cancel_date = add_seconds(cancel)
 
     escrow_tx = EscrowCreate(
@@ -99,7 +106,7 @@ def create_conditional_escrow(seed, amount, destination, cancel, condition):
 
 def finish_conditional_escrow(seed, owner, sequence, condition, fulfillment):
     wallet = Wallet.from_seed(seed)
-    client = JsonRpcClient(testnet_url)
+    client = JsonRpcClient(xrp_url)
     finish_tx = EscrowFinish(
         account=wallet.address,
         owner=owner,
@@ -119,7 +126,7 @@ def finish_conditional_escrow(seed, owner, sequence, condition, fulfillment):
 
 
 def get_escrows(account):
-    client = JsonRpcClient(testnet_url)
+    client = JsonRpcClient(xrp_url)
     acct_escrows = AccountObjects(
         account=account, ledger_index="validated", type="escrow"
     )

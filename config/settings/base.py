@@ -285,3 +285,4 @@ SECURE_REDIRECT_EXEMPT = [
 # ------------------------------------------------------------------------------
 # this is the default life span of short code (5mins)
 CODE_LIFE_SPAN = 60 * 5
+XRP_LIVE = env.bool("XRP_LIVE", default=False)
