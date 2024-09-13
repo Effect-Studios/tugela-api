@@ -6,7 +6,9 @@ from apps.common.models import Currency
 from apps.common.serializers import (
     CompanyBaseSerializer,
     FreelancerBaseSerializer,
+    JobSubmissionBaseSerializer,
     SkillBaseSerializer,
+    UserBaseSerializer,
 )
 from apps.common.xrp import (
     create_conditional_escrow,
@@ -16,7 +18,7 @@ from apps.common.xrp import (
 )
 from apps.notifications.utils import fcm_notify
 
-from .models import Application, Job, JobBookmark, Tag
+from .models import Application, Job, JobBookmark, JobSubmission, Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -252,10 +254,19 @@ class ApplicationSerializer(serializers.ModelSerializer):
 class ApplicationReadSerializer(serializers.ModelSerializer):
     freelancer = FreelancerBaseSerializer()
     job = JobReadSerializer()
+    submission = JobSubmissionBaseSerializer(many=True)
 
     class Meta:
         model = Application
-        fields = ("id", "freelancer", "job", "status", "created_at", "updated_at")
+        fields = (
+            "id",
+            "freelancer",
+            "job",
+            "status",
+            "submission",
+            "created_at",
+            "updated_at",
+        )
 
 
 class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
@@ -301,3 +312,18 @@ class BookmarkReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobBookmark
         fields = "__all__"
+
+
+class JobSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobSubmission
+        fields = ["id", "application", "user", "link", "file"]
+
+
+class JobSubmissionReadSerializer(serializers.ModelSerializer):
+    application = ApplicationReadSerializer()
+    user = UserBaseSerializer()
+
+    class Meta:
+        model = JobSubmission
+        fields = ["id", "application", "user", "link", "file"]

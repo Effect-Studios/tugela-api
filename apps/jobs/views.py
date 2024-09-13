@@ -3,6 +3,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -10,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from apps.common.permissions import IsAdmin, IsCompanyManager, IsCompanyOwner
 
 from .filters import ApplicationFilter
-from .models import Application, Job, JobBookmark, Tag
+from .models import Application, Job, JobBookmark, JobSubmission, Tag
 from .serializers import (
     ApplicationCreateSerializer,
     ApplicationReadSerializer,
@@ -20,6 +21,8 @@ from .serializers import (
     CreateEscrowSerializer,
     JobReadSerializer,
     JobSerializer,
+    JobSubmissionReadSerializer,
+    JobSubmissionSerializer,
     RedeemEscrowSerializer,
     TagSerializer,
     UpdateApplicationStatusSerializer,
@@ -156,4 +159,29 @@ class BookmarkView(ModelViewSet):
     def get_serializer_class(self):
         if self.action in ["retrieve", "list"]:
             self.serializer_class = BookmarkReadSerializer
+        return super().get_serializer_class()
+
+
+class JobSubmissionView(ModelViewSet):
+    queryset = JobSubmission.objects.all().order_by("created_at")
+    serializer_class = JobSubmissionSerializer
+    filterset_fields = ["application", "user"]
+    parser_classes = (JSONParser, FormParser, MultiPartParser)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            return self.queryset.none()
+        if user.is_staff or user.role == user.Roles.ADMIN:
+            return self.queryset
+        return self.queryset.filter(
+            Q(application__freelancer__user=user)
+            | Q(application__job__company__managers__in=user.companies_managed.all())
+            | Q(application__job__company__user=user)
+            | Q(user=user)
+        )
+
+    def get_serializer_class(self):
+        if self.action in ["retrieve"]:
+            self.serializer_class = JobSubmissionReadSerializer
         return super().get_serializer_class()

@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from apps.companies.models import Company, CompanyIndustry, CompanyManager, CompanyValue
 from apps.freelancers.models import Freelancer, PortfolioItem, Service, WorkExperience
+from apps.jobs.models import JobSubmission
 from apps.users.models import Category, Skill
 
 User = get_user_model()
@@ -28,6 +29,14 @@ class UserBaseSerializer(serializers.ModelSerializer):
             "email",
             "username",
         ]
+
+
+class JobSubmissionBaseSerializer(serializers.ModelSerializer):
+    user = UserBaseSerializer()
+
+    class Meta:
+        model = JobSubmission
+        fields = ["id", "application", "user", "link", "file"]
 
 
 class WorkExperienceBaseSerializer(serializers.ModelSerializer):

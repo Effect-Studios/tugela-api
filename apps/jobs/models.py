@@ -117,6 +117,23 @@ class JobBookmark(base_models.BaseModel):
         return f"Bookmarked {self.job.title}::{self.freelancer.user.username}"
 
 
+class JobSubmission(base_models.BaseModel):
+    application = models.ForeignKey(
+        "Application", on_delete=models.CASCADE, related_name="submission"
+    )
+    user = models.ForeignKey(
+        "users.User", on_delete=models.CASCADE, related_name="job_submissions"
+    )
+    link = models.CharField(max_length=500, blank=True)
+    file = models.FileField(upload_to="job_submissions", null=True)
+
+    class Meta:
+        ordering = ("created_at",)
+
+    def __str__(self):
+        return f"Submission {self.application.job.title}::{self.application.freelancer.user.username}"
+
+
 # SIGNALS
 # ---------------------------------------------------
 @receiver(models.signals.post_save, sender=Application)
