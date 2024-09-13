@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
@@ -9,6 +11,7 @@ from .models import Freelancer, PortfolioItem, Service, WorkExperience
 from .serializers import (
     FreelancerReadSerializer,
     FreelancerSerializer,
+    PortfolioItemMiniSerializer,
     PortfolioItemReadSerializer,
     PortfolioItemSerializer,
     ServiceReadSerializer,
@@ -51,12 +54,15 @@ class FreelancerView(ModelViewSet):
         wallet = get_account("")
         serializer.save(xrp_seed=wallet.seed, xrp_address=wallet.address)
 
-        # fund account
-        if settings.XRP_LIVE:
-            xrp_main_seed = settings.XRP_MAIN_SEED
-            xrp_amount = 10
-            acc_to_fund = wallet.address
-            send_xrp(xrp_main_seed, xrp_amount, acc_to_fund)
+        try:
+            # fund account
+            if settings.XRP_LIVE:
+                xrp_main_seed = settings.XRP_MAIN_SEED
+                xrp_amount = 10
+                acc_to_fund = wallet.address
+                send_xrp(xrp_main_seed, xrp_amount, acc_to_fund)
+        except Exception as e:
+            logging.warning(e)
 
 
 class WorkExperienceView(ModelViewSet):
@@ -102,6 +108,8 @@ class PortfolioItemView(ModelViewSet):
         return self.queryset.filter(freelancer__user=user)
 
     def get_serializer_class(self):
+        if self.action in ["list"]:
+            self.serializer_class = PortfolioItemMiniSerializer
         if self.action in ["retrieve"]:
             self.serializer_class = PortfolioItemReadSerializer
         return super().get_serializer_class()

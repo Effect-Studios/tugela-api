@@ -32,6 +32,11 @@ class Job(base_models.BaseModel):
         ASSIGNED = "assigned", _("Assigned")
         COMPLETED = "completed", _("Completed")
 
+    class EscrowStatus(models.TextChoices):
+        CREATED = "created", _("Created")
+        REDEEMED = "redeemed", _("Redeemed")
+        PENDING = "pending", _("Pending")
+
     company = models.ForeignKey(
         "companies.Company", on_delete=models.CASCADE, related_name="jobs"
     )
@@ -67,6 +72,9 @@ class Job(base_models.BaseModel):
     escrow_sequence = models.CharField(max_length=255, blank=True)
     escrow_condition = models.CharField(max_length=255, blank=True)
     escrow_fulfillment = models.CharField(max_length=255, blank=True)
+    escrow_status = models.CharField(
+        max_length=25, choices=EscrowStatus.choices, default=EscrowStatus.PENDING
+    )
 
     class Meta:
         ordering = ("created_at",)

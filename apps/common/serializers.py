@@ -81,6 +81,25 @@ class ServiceBaseSerializer(serializers.ModelSerializer):
         ]
 
 
+class FreelancerMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Freelancer
+        fields = [
+            "id",
+            "user",
+            "fullname",
+            "title",
+            "bio",
+            "location",
+            "gender",
+            "dob",
+            "contact",
+            "website",
+            "phone_number",
+            "profile_image",
+        ]
+
+
 class FreelancerBaseSerializer(serializers.ModelSerializer):
     user = UserBaseSerializer()
     skills = SkillBaseSerializer(many=True)

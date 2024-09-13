@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.common.serializers import UserBaseSerializer
+from apps.common.serializers import FreelancerMiniSerializer, UserBaseSerializer
 from apps.users.serializers import CategorySerializer, SkillSerializer
 
 from .models import Freelancer, PortfolioItem, Service, WorkExperience
@@ -63,6 +63,28 @@ class WorkExperienceSerializer(serializers.ModelSerializer):
 
 
 class PortfolioItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioItem
+        fields = [
+            "id",
+            "freelancer",
+            "title",
+            "description",
+            "category",
+            "skills",
+            "project_url",
+            "video_url",
+            "start_date",
+            "end_date",
+            "portfolio_file",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class PortfolioItemMiniSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerMiniSerializer(read_only=True)
+
     class Meta:
         model = PortfolioItem
         fields = [

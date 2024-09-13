@@ -167,19 +167,30 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
             freelancer_address = freelancer.xrp_address
             finish_time = 60 * 60  # In seconds
             price_in_drops = xrp_to_drops(price)
-            escrow = create_conditional_escrow(
-                company_seed, price_in_drops, freelancer_address, finish_time, condition
-            )
+            try:
+                escrow = create_conditional_escrow(
+                    company_seed,
+                    price_in_drops,
+                    freelancer_address,
+                    finish_time,
+                    condition,
+                )
+            except Exception as e:
+                raise serializers.ValidationError(
+                    {"message": "Escrow creation failed", "error": e}
+                )
             # Update jobs
             escrow_sequence = escrow["tx_json"]["Sequence"]
             job.escrow_condition = condition
             job.escrow_fulfillment = fulfillment
             job.escrow_sequence = escrow_sequence
+            job.escrow_status = job.EscrowStatus.CREATED
             job.save(
                 update_fields=[
                     "escrow_sequence",
                     "escrow_condition",
                     "escrow_fulfillment",
+                    "escrow_status",
                     "updated_at",
                 ]
             )
@@ -216,9 +227,17 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
             company = job.company
             company_seed = company.xrp_seed
             company_address = company.xrp_address
-            finish_conditional_escrow(
-                company_seed, company_address, sequence, condition, fulfillment
-            )
+            try:
+                finish_conditional_escrow(
+                    company_seed, company_address, sequence, condition, fulfillment
+                )
+            except Exception as e:
+                raise serializers.ValidationError({"message": "Failed", "error": e})
+
+            # update job escrow status
+            job.escrow_status = job.EscrowStatus.CREATED
+            job.save(update_fields=["escrow_status", "updated_at"])
+
             return {"message": "Escrow redeemed"}
         else:
             raise serializers.ValidationError({"message": "Escrow condition not met"})
