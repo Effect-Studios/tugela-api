@@ -34,3 +34,18 @@ class Country(base_models.BaseModel):
 
     def __str__(self):
         return f"{self.name}::{self.code}"
+
+
+class PaymentService(base_models.BaseModel):
+    class Status(models.TextChoices):
+        ACTIVE = "active", _("Active")
+        INACTIVE = "inactive", _("In Active")
+
+    name = models.CharField(max_length=50)
+    url = models.CharField(max_length=255)
+    status = models.CharField(
+        max_length=50, choices=Status.choices, default=Status.ACTIVE
+    )
+
+    def __str__(self):
+        return self.name

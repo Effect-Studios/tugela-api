@@ -9,11 +9,12 @@ from rest_framework.viewsets import ViewSet
 from apps.common.pagination import DefaultPagination
 from apps.common.permissions import IsAdmin
 
-from .models import Country, Currency
+from .models import Country, Currency, PaymentService
 from .serializers import (
     CountrySerializer,
     CurrencyQueryParamSerializer,
     CurrencySerializer,
+    PaymentServiceSerializer,
     XRPBalanceSerializer,
 )
 
@@ -128,3 +129,20 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
         res = serializer.save()
 
         return Response(res, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        method="GET",
+        responses={200: PaymentServiceSerializer},
+    )
+    @action(
+        detail=False,
+        permission_classes=[AllowAny],
+        methods=["GET"],
+        url_path="get-payment-services",
+    )
+    def get_payment_services(self, request, *args, **kwargs):
+        qs = PaymentService.objects.all()
+
+        page = self.paginate_queryset(qs, request)
+        serializer = PaymentServiceSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)

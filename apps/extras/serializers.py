@@ -3,7 +3,7 @@ from xrpl.utils import drops_to_xrp
 
 from apps.common.xrp import get_acc_info
 
-from .models import Country, Currency
+from .models import Country, Currency, PaymentService
 
 
 class CurrencySerializer(serializers.ModelSerializer):
@@ -43,3 +43,9 @@ class XRPBalanceSerializer(serializers.Serializer):
             return res
         except Exception as e:
             raise serializers.ValidationError({"message": e})
+
+
+class PaymentServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentService
+        fields = ["id", "name", "url", "status"]
