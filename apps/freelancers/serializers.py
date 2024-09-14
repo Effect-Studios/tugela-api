@@ -105,6 +105,7 @@ class PortfolioItemMiniSerializer(serializers.ModelSerializer):
 
 
 class PortfolioItemReadSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerMiniSerializer(read_only=True)
     category = CategorySerializer()
     skills = SkillSerializer(many=True)
 
@@ -148,6 +149,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class ServiceReadSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerMiniSerializer(read_only=True)
     category = CategorySerializer()
     skills = SkillSerializer(many=True)
 
