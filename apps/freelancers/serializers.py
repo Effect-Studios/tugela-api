@@ -84,6 +84,7 @@ class PortfolioItemSerializer(serializers.ModelSerializer):
 
 class PortfolioItemMiniSerializer(serializers.ModelSerializer):
     freelancer = FreelancerMiniSerializer(read_only=True)
+    skills = SkillSerializer(many=True)
 
     class Meta:
         model = PortfolioItem
