@@ -1,7 +1,10 @@
+import logging
+
 from django.db import transaction
 from rest_framework import serializers
 from xrpl.utils import xrp_to_drops
 
+from apps.common.email import send_email_template
 from apps.common.models import Currency
 from apps.common.serializers import (
     CompanyBaseSerializer,
@@ -292,6 +295,17 @@ class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
                 body = f"Your application for {job.title} at {job.company} has been accepted"
                 user = instance.freelancer.user
                 fcm_notify(user, title, body)
+
+                try:
+                    # send email
+                    template_id = "d-1f3bca7a63f74b0c9ed3a72f5a946f54"
+                    dynamic_data = {"name": user.username or user.email}
+                    send_email_template(
+                        user.email, template_id, dynamic_template_data=dynamic_data
+                    )
+                except Exception as e:
+                    logging.warning("Acceptance email failed")
+                    logging.warning(e)
 
                 return instance
             else:

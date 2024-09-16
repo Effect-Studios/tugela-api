@@ -38,9 +38,9 @@ def create_task(
 
     # google tasks handler urls
     handler = {
-        "send-email": reverse("api:common-send-email"),
+        "send-email": reverse("api:notifications-send-email"),
         "send-notification": reverse("api:notifications-send-notification"),
-        "send-sms": reverse("api:common-send-sms"),
+        "send-sms": reverse("api:notifications-send-sms"),
     }
 
     # print("url: ", reverse("api:notifications-send-notification"))
