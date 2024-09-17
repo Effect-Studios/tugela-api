@@ -121,8 +121,11 @@ class JobSubmission(base_models.BaseModel):
     application = models.ForeignKey(
         "Application", on_delete=models.CASCADE, related_name="submission"
     )
-    user = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, related_name="job_submissions"
+    freelancer = models.ForeignKey(
+        "freelancers.Freelancer",
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="job_submissions",
     )
     link = models.CharField(max_length=500, blank=True)
     file = models.FileField(upload_to="job_submissions", null=True)

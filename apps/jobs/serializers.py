@@ -11,7 +11,6 @@ from apps.common.serializers import (
     FreelancerBaseSerializer,
     JobSubmissionBaseSerializer,
     SkillBaseSerializer,
-    UserBaseSerializer,
 )
 from apps.common.xrp import (
     create_conditional_escrow,
@@ -331,13 +330,14 @@ class BookmarkReadSerializer(serializers.ModelSerializer):
 class JobSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobSubmission
-        fields = ["id", "application", "user", "link", "file"]
+        fields = ["id", "application", "freelancer", "link", "file"]
+        extra_kwargs = {"freelancer": {"required": True}}
 
 
 class JobSubmissionReadSerializer(serializers.ModelSerializer):
     application = ApplicationReadSerializer()
-    user = UserBaseSerializer()
+    freelancer = FreelancerBaseSerializer()
 
     class Meta:
         model = JobSubmission
-        fields = ["id", "application", "user", "link", "file"]
+        fields = ["id", "application", "freelancer", "link", "file"]

@@ -31,14 +31,6 @@ class UserBaseSerializer(serializers.ModelSerializer):
         ]
 
 
-class JobSubmissionBaseSerializer(serializers.ModelSerializer):
-    user = UserBaseSerializer()
-
-    class Meta:
-        model = JobSubmission
-        fields = ["id", "application", "user", "link", "file"]
-
-
 class WorkExperienceBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkExperience
@@ -157,6 +149,14 @@ class FreelancerBaseSerializer(serializers.ModelSerializer):
 
     # def get_rejected_applications(self, obj) -> int:
     #     return getattr(obj, "rejected_applications", 0)
+
+
+class JobSubmissionBaseSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerMiniSerializer()
+
+    class Meta:
+        model = JobSubmission
+        fields = ["id", "application", "freelancer", "link", "file"]
 
 
 class CompanyManagerBaseSerializer(serializers.ModelSerializer):

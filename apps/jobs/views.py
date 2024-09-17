@@ -10,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.common.permissions import IsAdmin, IsCompanyManager, IsCompanyOwner
 
-from .filters import ApplicationFilter
+from .filters import ApplicationFilter, JobSubmissionFilter
 from .models import Application, Job, JobBookmark, JobSubmission, Tag
 from .serializers import (
     ApplicationCreateSerializer,
@@ -165,7 +165,7 @@ class BookmarkView(ModelViewSet):
 class JobSubmissionView(ModelViewSet):
     queryset = JobSubmission.objects.all().order_by("created_at")
     serializer_class = JobSubmissionSerializer
-    filterset_fields = ["application", "user"]
+    filterset_class = JobSubmissionFilter
     parser_classes = (JSONParser, FormParser, MultiPartParser)
 
     def get_queryset(self):
@@ -178,10 +178,9 @@ class JobSubmissionView(ModelViewSet):
             Q(application__freelancer__user=user)
             | Q(application__job__company__managers__in=user.companies_managed.all())
             | Q(application__job__company__user=user)
-            | Q(user=user)
         )
 
     def get_serializer_class(self):
-        if self.action in ["retrieve"]:
+        if self.action in ["retrieve", "list"]:
             self.serializer_class = JobSubmissionReadSerializer
         return super().get_serializer_class()
