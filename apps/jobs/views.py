@@ -132,7 +132,7 @@ class ApplicationView(ModelViewSet):
     @action(
         detail=True,
         methods=["POST"],
-        permission_classes=[IsAdmin | IsCompanyOwner | IsCompanyManager],
+        # permission_classes=[IsAdmin | IsCompanyOwner | IsCompanyManager],
         url_path="update-status",
     )
     def update_status(self, request, *args, **kwargs):
