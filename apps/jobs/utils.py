@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from xrpl.utils import xrp_to_drops
 
+from apps.common.exchange import currency_conversion
 from apps.common.models import Currency
 from apps.common.xrp import (
     create_conditional_escrow,
@@ -23,12 +24,16 @@ def create_escrow(job, freelancer):
         raise serializers.ValidationError({"message": "Update xrp address and seed"})
 
     # check currency
-    if job.currency != Currency.XRP:
-        raise serializers.ValidationError({"message": "Price should be in Ripple"})
+    currency = job.currency
+    if currency != Currency.USD:
+        raise serializers.ValidationError({"message": "Price should be in USD"})
+
+    # convert usd to xrp
+    xrp_price = currency_conversion(job.price, currency=Currency.XRP)
 
     # check sufficient balance
     address = company.xrp_address
-    price = job.price
+    price = xrp_price
     reserve = 15  # ripple accounts must have reserve balance
     price_n_reserve = price + reserve
     price_n_reserve_in_drops = int(xrp_to_drops(price_n_reserve))

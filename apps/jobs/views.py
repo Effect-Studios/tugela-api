@@ -49,7 +49,11 @@ class TagView(ModelViewSet):
 
 
 class JobView(ModelViewSet):
-    queryset = Job.objects.all().order_by("created_at")
+    queryset = (
+        Job.objects.select_related("company")
+        .prefetch_related("applicants")
+        .order_by("created_at")
+    )
     serializer_class = JobSerializer
     search_fields = ("title", "description", "skills__name", "company__name")
     filterset_fields = ("company", "status")
@@ -66,7 +70,11 @@ class JobView(ModelViewSet):
 
 
 class ApplicationView(ModelViewSet):
-    queryset = Application.objects.all().order_by("created_at")
+    queryset = (
+        Application.objects.select_related("freelancer", "job")
+        .prefetch_related("submission")
+        .order_by("created_at")
+    )
     serializer_class = ApplicationSerializer
     filterset_class = ApplicationFilter
 
@@ -163,7 +171,9 @@ class BookmarkView(ModelViewSet):
 
 
 class JobSubmissionView(ModelViewSet):
-    queryset = JobSubmission.objects.all().order_by("created_at")
+    queryset = JobSubmission.objects.select_related(
+        "application", "freelancer"
+    ).order_by("created_at")
     serializer_class = JobSubmissionSerializer
     filterset_class = JobSubmissionFilter
     parser_classes = (JSONParser, FormParser, MultiPartParser)

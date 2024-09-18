@@ -57,6 +57,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "drf_yasg",
     "fcm_django",
+    "djmoney.contrib.exchange",
 ]
 
 LOCAL_APPS = [
@@ -214,6 +215,15 @@ SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "UPDATE_LAST_LOGIN": True,
 }
+
+
+# EXCHANGE RATE
+# ----------------------------------------------------------------------------
+EXCHANGE_BACKEND = "djmoney.contrib.exchange.backends.OpenExchangeRatesBackend"
+OPEN_EXCHANGE_RATES_URL = "https://openexchangerates.org/api/latest.json?symbols=EUR,GHS,NGN,GBP,XRP&show_alternative=true"  # noqa E501
+OPEN_EXCHANGE_RATES_APP_ID = env("APP_ID", default="")
+BASE_CURRENCY = "USD"
+SYMBOLS = "GHS,NGN,GBP,KES,ZAR,EUR,CAD,XRP"
 
 
 # CORS

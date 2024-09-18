@@ -21,7 +21,13 @@ from .serializers import (
 
 
 class FreelancerView(ModelViewSet):
-    queryset = Freelancer.objects.all().order_by("created_at")
+    queryset = (
+        Freelancer.objects.select_related("user")
+        .prefetch_related(
+            "applications", "work_experiences", "portfolio_item", "services"
+        )
+        .order_by("created_at")
+    )
     serializer_class = FreelancerSerializer
     search_fields = ("fullname", "title", "bio", "skills__name")
     filterset_fields = ("user", "gender")

@@ -47,7 +47,9 @@ class UserView(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericView
     """
 
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    queryset = User.objects.prefetch_related(
+        "company", "companies_managed", "freelancer"
+    )
     filterset_fields = ["is_active", "deleted"]
     search_fields = [
         "email",
