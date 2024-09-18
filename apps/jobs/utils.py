@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import serializers
 from xrpl.utils import xrp_to_drops
 
@@ -66,6 +68,7 @@ def create_escrow(job, freelancer):
             condition,
         )
     except Exception as e:
+        logging.warning(e)
         raise serializers.ValidationError(
             {"message": "Escrow creation failed", "error": e}
         )
@@ -103,6 +106,7 @@ def redeem_escrow(job):
             company_seed, company_address, sequence, condition, fulfillment
         )
     except Exception as e:
+        logging.warning(e)
         raise serializers.ValidationError(
             {"message": "Failed to redeem escrow", "error": e}
         )
