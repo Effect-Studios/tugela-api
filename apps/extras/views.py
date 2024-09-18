@@ -154,7 +154,7 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
         url_path="update-rates",
     )
     def update_rates(self, request):
-        from api_project.common.exchange import update_rates
+        from apps.common.exchange import update_rates
 
         update_rates()
 
