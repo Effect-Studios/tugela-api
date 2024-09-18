@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from apps.common.pagination import DefaultPagination
-from apps.common.permissions import IsAdmin
+from apps.common.permissions import IsAdmin, IsCron
 
 from .models import Country, Currency, PaymentService
 from .serializers import (
@@ -146,3 +146,16 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
         page = self.paginate_queryset(qs, request)
         serializer = PaymentServiceSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(
+        methods=["GET"],
+        detail=False,
+        permission_classes=[IsCron],
+        url_path="update-rates",
+    )
+    def update_rates(self, request):
+        from api_project.common.exchange import update_rates
+
+        update_rates()
+
+        return Response("OK")
