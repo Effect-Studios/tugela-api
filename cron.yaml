@@ -2,3 +2,8 @@ cron:
   - description: "update exchange rates"
     url: /api/extras/update-rates
     schedule: every 1 hours
+
+  - description: "update exchange rates prod"
+    url: /api/extras/update-rates
+    schedule: every 1 hours
+    target: prod

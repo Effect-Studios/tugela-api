@@ -288,6 +288,7 @@ SECURE_REDIRECT_EXEMPT = [
     r"^api/notifications/send-email/$",
     r"^api/notifications/send-notification/$",
     r"^api/notifications/send-sms/$",
+    r"^api/extras/update-rates/$",
 ]
 
 
@@ -298,4 +299,4 @@ CODE_LIFE_SPAN = 60 * 5
 XRP_LIVE = env.bool("XRP_LIVE", default=False)
 XRP_MAIN_ACC = env("XRP_MAIN_ACC", default="")
 XRP_MAIN_SEED = env("XRP_MAIN_SEED", default="")
-XRP_SOURCE_TAG = env("XRP_SOURCE_TAG", default=54576093)
+XRP_SOURCE_TAG = env.int("XRP_SOURCE_TAG", default=54576093)
