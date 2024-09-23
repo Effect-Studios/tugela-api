@@ -40,7 +40,7 @@ class Job(base_models.BaseModel):
     company = models.ForeignKey(
         "companies.Company", on_delete=models.CASCADE, related_name="jobs"
     )
-    title = models.CharField(max_length=65)
+    title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     responsibilities = models.TextField(blank=True)
     experience = models.TextField(blank=True)

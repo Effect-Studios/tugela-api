@@ -16,6 +16,7 @@ from .serializers import (
     CurrencySerializer,
     PaymentServiceSerializer,
     XRPBalanceSerializer,
+    XRPWithdrawalSerializer,
 )
 
 # Create your views here.
@@ -36,6 +37,12 @@ type_param = openapi.Parameter(
     description=f"Currency Type `{Currency.Type.values}`",
     type=openapi.TYPE_STRING,
     required=False,
+)
+
+# api schema
+response_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={"message": openapi.Schema(type=openapi.TYPE_STRING)},
 )
 
 
@@ -125,6 +132,26 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
     )
     def get_balance(self, request, *args, **kwargs):
         serializer = XRPBalanceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        res = serializer.save()
+
+        return Response(res, status=status.HTTP_200_OK)
+
+    # Withdraw XRP
+    # ---------------------------------------------
+    @swagger_auto_schema(
+        method="POST",
+        request_body=XRPWithdrawalSerializer,
+        responses={200: response_schema},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        url_path="withdraw-xrp",
+    )
+    def withdraw_xrp(self, request, *args, **kwargs):
+        context = {"request": request}
+        serializer = XRPWithdrawalSerializer(data=request.data, context=context)
         serializer.is_valid(raise_exception=True)
         res = serializer.save()
 
