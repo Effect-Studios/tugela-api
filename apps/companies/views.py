@@ -20,7 +20,11 @@ from .serializers import (
 
 
 class CompanyView(ModelViewSet):
-    queryset = Company.objects.all().order_by("created_at")
+    queryset = (
+        Company.objects.select_related("user")
+        .prefetch_related("managers")
+        .order_by("created_at")
+    )
     serializer_class = CompanySerializer
     search_fields = ("name", "description", "email")
     filterset_fields = ("user", "company_size", "organization_type")
@@ -64,7 +68,9 @@ class CompanyView(ModelViewSet):
 
 
 class CompanyManagerView(ModelViewSet):
-    queryset = CompanyManager.objects.all().order_by("created_at")
+    queryset = CompanyManager.objects.select_related("user", "company").order_by(
+        "created_at"
+    )
     serializer_class = CompanyManagerSerializer
     filterset_fields = ("user", "company")
 

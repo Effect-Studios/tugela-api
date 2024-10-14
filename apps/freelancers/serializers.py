@@ -84,6 +84,7 @@ class PortfolioItemSerializer(serializers.ModelSerializer):
 
 class PortfolioItemMiniSerializer(serializers.ModelSerializer):
     freelancer = FreelancerMiniSerializer(read_only=True)
+    skills = SkillSerializer(many=True)
 
     class Meta:
         model = PortfolioItem
@@ -105,6 +106,7 @@ class PortfolioItemMiniSerializer(serializers.ModelSerializer):
 
 
 class PortfolioItemReadSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerMiniSerializer(read_only=True)
     category = CategorySerializer()
     skills = SkillSerializer(many=True)
 
@@ -148,6 +150,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class ServiceReadSerializer(serializers.ModelSerializer):
+    freelancer = FreelancerMiniSerializer(read_only=True)
     category = CategorySerializer()
     skills = SkillSerializer(many=True)
 
@@ -173,7 +176,7 @@ class ServiceReadSerializer(serializers.ModelSerializer):
 class FreelancerReadSerializer(serializers.ModelSerializer):
     user = UserBaseSerializer()
     work_experiences = WorkExperienceSerializer(many=True)
-    portfolio_item = PortfolioItemSerializer(many=True)
+    portfolio_item = PortfolioItemMiniSerializer(many=True)
     services = ServiceSerializer(many=True)
     skills = SkillSerializer(many=True)
     # total_applications = serializers.SerializerMethodField()

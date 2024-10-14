@@ -10,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.common.permissions import IsAdmin, IsCompanyManager, IsCompanyOwner
 
-from .filters import ApplicationFilter
+from .filters import ApplicationFilter, JobSubmissionFilter
 from .models import Application, Job, JobBookmark, JobSubmission, Tag
 from .serializers import (
     ApplicationCreateSerializer,
@@ -49,7 +49,11 @@ class TagView(ModelViewSet):
 
 
 class JobView(ModelViewSet):
-    queryset = Job.objects.all().order_by("created_at")
+    queryset = (
+        Job.objects.select_related("company")
+        .prefetch_related("applicants")
+        .order_by("created_at")
+    )
     serializer_class = JobSerializer
     search_fields = ("title", "description", "skills__name", "company__name")
     filterset_fields = ("company", "status")
@@ -66,7 +70,11 @@ class JobView(ModelViewSet):
 
 
 class ApplicationView(ModelViewSet):
-    queryset = Application.objects.all().order_by("created_at")
+    queryset = (
+        Application.objects.select_related("freelancer", "job")
+        .prefetch_related("submission")
+        .order_by("created_at")
+    )
     serializer_class = ApplicationSerializer
     filterset_class = ApplicationFilter
 
@@ -132,7 +140,7 @@ class ApplicationView(ModelViewSet):
     @action(
         detail=True,
         methods=["POST"],
-        permission_classes=[IsAdmin | IsCompanyOwner | IsCompanyManager],
+        # permission_classes=[IsAdmin | IsCompanyOwner | IsCompanyManager],
         url_path="update-status",
     )
     def update_status(self, request, *args, **kwargs):
@@ -163,9 +171,11 @@ class BookmarkView(ModelViewSet):
 
 
 class JobSubmissionView(ModelViewSet):
-    queryset = JobSubmission.objects.all().order_by("created_at")
+    queryset = JobSubmission.objects.select_related(
+        "application", "freelancer"
+    ).order_by("created_at")
     serializer_class = JobSubmissionSerializer
-    filterset_fields = ["application", "user"]
+    filterset_class = JobSubmissionFilter
     parser_classes = (JSONParser, FormParser, MultiPartParser)
 
     def get_queryset(self):
@@ -178,10 +188,9 @@ class JobSubmissionView(ModelViewSet):
             Q(application__freelancer__user=user)
             | Q(application__job__company__managers__in=user.companies_managed.all())
             | Q(application__job__company__user=user)
-            | Q(user=user)
         )
 
     def get_serializer_class(self):
-        if self.action in ["retrieve"]:
+        if self.action in ["retrieve", "list"]:
             self.serializer_class = JobSubmissionReadSerializer
         return super().get_serializer_class()

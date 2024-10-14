@@ -18,3 +18,5 @@ google-cloud-tasks==2.5.1  # https://github.com/googleapis/python-tasks
 xrpl-py==3.0.0
 cryptoconditions==0.8.1
 fcm-django==2.2.1
+django-money==3.5.3
+certifi==2024.7.4

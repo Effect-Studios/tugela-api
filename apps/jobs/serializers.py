@@ -1,24 +1,19 @@
+import logging
+
 from django.db import transaction
 from rest_framework import serializers
-from xrpl.utils import xrp_to_drops
 
-from apps.common.models import Currency
+from apps.common.email import send_email_template
 from apps.common.serializers import (
     CompanyBaseSerializer,
     FreelancerBaseSerializer,
     JobSubmissionBaseSerializer,
     SkillBaseSerializer,
-    UserBaseSerializer,
-)
-from apps.common.xrp import (
-    create_conditional_escrow,
-    finish_conditional_escrow,
-    generate_condition,
-    get_acc_info,
 )
 from apps.notifications.utils import fcm_notify
 
 from .models import Application, Job, JobBookmark, JobSubmission, Tag
+from .utils import create_escrow, redeem_escrow
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -55,6 +50,22 @@ class JobSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
+    def update(self, instance, validated_data):
+        status = validated_data.get("status")
+        if (
+            status == instance.Status.COMPLETED
+            and instance.status == instance.Status.ASSIGNED
+        ):
+            instance.status = status
+            instance.save(update_fields=["status", "updated_at"])
+
+            # redeem escrow
+            redeem_escrow(instance)
+
+            return instance
+
+        return super().update(instance, validated_data)
+
 
 class JobReadSerializer(serializers.ModelSerializer):
     company = CompanyBaseSerializer()
@@ -84,6 +95,7 @@ class JobReadSerializer(serializers.ModelSerializer):
             "experience",
             "max_price",
             "min_price",
+            "escrow_status",
             "created_at",
             "updated_at",
         )
@@ -131,72 +143,10 @@ class CreateEscrowSerializer(serializers.ModelSerializer):
 
         if status == Application.Status.ACCEPTED:
             job = data.job
-            if job.escrow_sequence and job.escrow_condition and job.escrow_fulfillment:
-                raise serializers.ValidationError({"message": "Escrow already created"})
-
-            company = job.company
             freelancer = data.freelancer
 
-            # check if company has xrp address and seed
-            if not company.xrp_address and not company.xrp_seed:
-                raise serializers.ValidationError(
-                    {"message": "Update xrp address and seed"}
-                )
-
-            # check currency
-            if job.currency != Currency.XRP:
-                raise serializers.ValidationError(
-                    {"message": "Price should be in Ripple"}
-                )
-
-            # check sufficient balance
-            address = company.xrp_address
-            price = job.price
-            reserve = 15  # ripple accounts must have reserve balance
-            price_n_reserve = price + reserve
-            price_n_reserve_in_drops = int(xrp_to_drops(price_n_reserve))
-
-            res = get_acc_info(address)
-            acc_bal = int(res["Balance"])
-            if price_n_reserve_in_drops > acc_bal:
-                raise serializers.ValidationError(
-                    {"message": "Insufficient Balance to create job"}
-                )
-
-            # Create escrow for Job
-            condition, fulfillment = generate_condition()
-            company_seed = company.xrp_seed
-            freelancer_address = freelancer.xrp_address
-            finish_time = 60 * 60  # In seconds
-            price_in_drops = xrp_to_drops(price)
-            try:
-                escrow = create_conditional_escrow(
-                    company_seed,
-                    price_in_drops,
-                    freelancer_address,
-                    finish_time,
-                    condition,
-                )
-            except Exception as e:
-                raise serializers.ValidationError(
-                    {"message": "Escrow creation failed", "error": e}
-                )
-            # Update jobs
-            escrow_sequence = escrow["tx_json"]["Sequence"]
-            job.escrow_condition = condition
-            job.escrow_fulfillment = fulfillment
-            job.escrow_sequence = escrow_sequence
-            job.escrow_status = job.EscrowStatus.CREATED
-            job.save(
-                update_fields=[
-                    "escrow_sequence",
-                    "escrow_condition",
-                    "escrow_fulfillment",
-                    "escrow_status",
-                    "updated_at",
-                ]
-            )
-            return {"message": "Escrow created"}
+            # Create Escrow
+            return create_escrow(job, freelancer)
         else:
             raise serializers.ValidationError({"message": "Application not accepted"})
 
@@ -219,28 +169,8 @@ class RedeemEscrowSerializer(serializers.ModelSerializer):
         job = data.job
 
         if job.status == job.Status.COMPLETED:
-            sequence = job.escrow_sequence
-            condition = job.escrow_condition
-            fulfillment = job.escrow_fulfillment
-            if not sequence or not condition or not fulfillment:
-                raise serializers.ValidationError({"message": "Escrow not created"})
-
-            # redeem escrow for Job
-            company = job.company
-            company_seed = company.xrp_seed
-            company_address = company.xrp_address
-            try:
-                finish_conditional_escrow(
-                    company_seed, company_address, sequence, condition, fulfillment
-                )
-            except Exception as e:
-                raise serializers.ValidationError({"message": "Failed", "error": e})
-
-            # update job escrow status
-            job.escrow_status = job.EscrowStatus.CREATED
-            job.save(update_fields=["escrow_status", "updated_at"])
-
-            return {"message": "Escrow redeemed"}
+            # Redeem Escrow
+            return redeem_escrow(job)
         else:
             raise serializers.ValidationError({"message": "Escrow condition not met"})
 
@@ -287,11 +217,25 @@ class UpdateApplicationStatusSerializer(serializers.ModelSerializer):
                     job.save(update_fields=["status", "updated_at"])
                     instance.save(update_fields=["status", "updated_at"])
 
+                # Create Escrow
+                create_escrow(job, instance.freelancer)
+
                 # send in app notification
                 title = "Application Approved"
                 body = f"Your application for {job.title} at {job.company} has been accepted"
                 user = instance.freelancer.user
                 fcm_notify(user, title, body)
+
+                try:
+                    # send email
+                    template_id = "d-1f3bca7a63f74b0c9ed3a72f5a946f54"
+                    dynamic_data = {"name": user.username or user.email}
+                    send_email_template(
+                        user.email, template_id, dynamic_template_data=dynamic_data
+                    )
+                except Exception as e:
+                    logging.warning("Acceptance email failed")
+                    logging.warning(e)
 
                 return instance
             else:
@@ -317,13 +261,14 @@ class BookmarkReadSerializer(serializers.ModelSerializer):
 class JobSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobSubmission
-        fields = ["id", "application", "user", "link", "file"]
+        fields = ["id", "application", "freelancer", "link", "file"]
+        extra_kwargs = {"freelancer": {"required": True}}
 
 
 class JobSubmissionReadSerializer(serializers.ModelSerializer):
     application = ApplicationReadSerializer()
-    user = UserBaseSerializer()
+    freelancer = FreelancerBaseSerializer()
 
     class Meta:
         model = JobSubmission
-        fields = ["id", "application", "user", "link", "file"]
+        fields = ["id", "application", "freelancer", "link", "file"]

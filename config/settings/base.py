@@ -57,6 +57,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "drf_yasg",
     "fcm_django",
+    "djmoney.contrib.exchange",
 ]
 
 LOCAL_APPS = [
@@ -216,6 +217,15 @@ SIMPLE_JWT = {
 }
 
 
+# EXCHANGE RATE
+# ----------------------------------------------------------------------------
+EXCHANGE_BACKEND = "djmoney.contrib.exchange.backends.OpenExchangeRatesBackend"
+OPEN_EXCHANGE_RATES_URL = "https://openexchangerates.org/api/latest.json?symbols=EUR,GHS,NGN,GBP,XRP&show_alternative=true"  # noqa E501
+OPEN_EXCHANGE_RATES_APP_ID = env("APP_ID", default="")
+BASE_CURRENCY = "USD"
+SYMBOLS = "GHS,NGN,GBP,KES,ZAR,EUR,CAD,XRP"
+
+
 # CORS
 # ---------------------------------------------------------------------------------
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -278,6 +288,7 @@ SECURE_REDIRECT_EXEMPT = [
     r"^api/notifications/send-email/$",
     r"^api/notifications/send-notification/$",
     r"^api/notifications/send-sms/$",
+    r"^api/extras/update-rates/$",
 ]
 
 
@@ -288,3 +299,4 @@ CODE_LIFE_SPAN = 60 * 5
 XRP_LIVE = env.bool("XRP_LIVE", default=False)
 XRP_MAIN_ACC = env("XRP_MAIN_ACC", default="")
 XRP_MAIN_SEED = env("XRP_MAIN_SEED", default="")
+XRP_SOURCE_TAG = env.int("XRP_SOURCE_TAG", default=54576093)

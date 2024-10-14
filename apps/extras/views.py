@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from apps.common.pagination import DefaultPagination
-from apps.common.permissions import IsAdmin
+from apps.common.permissions import IsAdmin, IsCron
 
 from .models import Country, Currency, PaymentService
 from .serializers import (
@@ -16,6 +16,7 @@ from .serializers import (
     CurrencySerializer,
     PaymentServiceSerializer,
     XRPBalanceSerializer,
+    XRPWithdrawalSerializer,
 )
 
 # Create your views here.
@@ -36,6 +37,12 @@ type_param = openapi.Parameter(
     description=f"Currency Type `{Currency.Type.values}`",
     type=openapi.TYPE_STRING,
     required=False,
+)
+
+# api schema
+response_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={"message": openapi.Schema(type=openapi.TYPE_STRING)},
 )
 
 
@@ -130,6 +137,26 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
 
         return Response(res, status=status.HTTP_200_OK)
 
+    # Withdraw XRP
+    # ---------------------------------------------
+    @swagger_auto_schema(
+        method="POST",
+        request_body=XRPWithdrawalSerializer,
+        responses={200: response_schema},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        url_path="withdraw-xrp",
+    )
+    def withdraw_xrp(self, request, *args, **kwargs):
+        context = {"request": request}
+        serializer = XRPWithdrawalSerializer(data=request.data, context=context)
+        serializer.is_valid(raise_exception=True)
+        res = serializer.save()
+
+        return Response(res, status=status.HTTP_200_OK)
+
     @swagger_auto_schema(
         method="GET",
         responses={200: PaymentServiceSerializer},
@@ -146,3 +173,16 @@ class MiscellaneousViewSet(ViewSet, DefaultPagination):
         page = self.paginate_queryset(qs, request)
         serializer = PaymentServiceSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(
+        methods=["GET"],
+        detail=False,
+        permission_classes=[IsCron],
+        url_path="update-rates",
+    )
+    def update_rates(self, request):
+        from apps.common.exchange import update_rates
+
+        update_rates()
+
+        return Response("OK")

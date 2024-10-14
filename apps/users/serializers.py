@@ -1,9 +1,11 @@
+import logging
+
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.common.email import send_email
+from apps.common.email import send_email_template
 from apps.common.serializers import CompanyBaseSerializer, FreelancerBaseSerializer
 from apps.common.utils import OTPUtils
 
@@ -67,8 +69,16 @@ class ForgotPasswordSerializer(serializers.Serializer):
         if user := User.objects.filter(email=email).first():
             code, token = OTPUtils.generate_otp(user)
 
-            # dynamic_data = {"first_name": user.first_name, "verification_code": code}
-            send_email(email, "Password Reset", code)
+            try:
+                dynamic_data = {"name": user.username or user.email, "code": code}
+                template_id = "d-e616772337244de28d0cf8959d56fae2"
+                send_email_template(
+                    email, template_id, dynamic_template_data=dynamic_data
+                )
+                # send_email(email, "Password Reset", code)
+            except Exception as e:
+                logging.warning("Forget password email failed")
+                logging.warning(e)
 
         return {"token": token}
 

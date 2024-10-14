@@ -52,7 +52,7 @@ def send_xrp(seed, amount, destination):
     client = xrpl.clients.JsonRpcClient(xrp_url)
     payment = xrpl.models.transactions.Payment(
         account=sending_wallet.address,
-        amount=xrpl.utils.xrp_to_drops(int(amount)),
+        amount=xrpl.utils.xrp_to_drops(amount),
         destination=destination,
     )
     try:
@@ -85,6 +85,7 @@ def create_conditional_escrow(seed, amount, destination, cancel, condition):
     wallet = Wallet.from_seed(seed)
     client = JsonRpcClient(xrp_url)
     cancel_date = add_seconds(cancel)
+    source_tag = settings.XRP_SOURCE_TAG
 
     escrow_tx = EscrowCreate(
         account=wallet.address,
@@ -92,6 +93,7 @@ def create_conditional_escrow(seed, amount, destination, cancel, condition):
         destination=destination,
         finish_after=cancel_date,
         condition=condition,
+        source_tag=source_tag,
     )
     # Submit the transaction and report the results
     reply = ""
