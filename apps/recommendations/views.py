@@ -1,7 +1,6 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -27,7 +26,6 @@ class AIView(ViewSet, DefaultPagination):
     @swagger_auto_schema(method="POST", responses={200: job_score_response_schema})
     @action(
         detail=False,
-        permission_classes=[AllowAny],
         methods=["POST"],
         url_path="job-score",
     )
