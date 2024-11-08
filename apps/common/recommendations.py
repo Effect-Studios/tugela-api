@@ -101,9 +101,15 @@ def recommendations(oai_key, candidate_profile, job_profile):
                 job_recruiter_response = ast.literal_eval(job_recruiter_response)
             except Exception as error:
                 job_recruiter_response = json.loads(job_recruiter_response)
+                
+        job_recruiter_response["probability_of_success"] = 100 * float(job_recruiter_response["confidence_score"]) / 5
 
     except Exception as error:
-        job_recruiter_response = {"confidence_score": 3}
+        job_recruiter_response = {'Technical Skills and Competency': 3.2}
+        job_recruiter_response = {'Cultural Fit and Behavioral Traits': 3.2}
+        job_recruiter_response = {'Experience and Potential': 3.2}
+        job_recruiter_response = {"confidence_score": 3.2}
+        job_recruiter_response["probability_of_success"] = 100 * job_recruiter_response["confidence_score"] / 5
         logger.error("OAI ENDPOINT CALL FAILURE: {0} | USE SKILLS MATCH INSTEAD".format(error))
         
     return job_recruiter_response
