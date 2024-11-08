@@ -23,7 +23,11 @@ job_score_response_schema = openapi.Schema(
 
 
 class AIView(ViewSet, DefaultPagination):
-    @swagger_auto_schema(method="POST", responses={200: job_score_response_schema})
+    @swagger_auto_schema(
+        method="POST",
+        request_body=JobScoreSerializer,
+        responses={200: job_score_response_schema},
+    )
     @action(
         detail=False,
         methods=["POST"],
