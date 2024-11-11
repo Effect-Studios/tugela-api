@@ -14,9 +14,9 @@ job_score_response_schema = openapi.Schema(
     properties={
         "score": openapi.Schema(type=openapi.TYPE_STRING),
         "confidence_score": openapi.Schema(type=openapi.TYPE_STRING),
-        "Technical Skills and Competency": openapi.Schema(type=openapi.TYPE_STRING),
-        "Cultural Fit and Behavioral Traits": openapi.Schema(type=openapi.TYPE_STRING),
-        "Experience and Potential": openapi.Schema(type=openapi.TYPE_STRING),
+        "technical_skills_and_competency": openapi.Schema(type=openapi.TYPE_STRING),
+        "cultural_fit_and_behavioral_traits": openapi.Schema(type=openapi.TYPE_STRING),
+        "experience_and_potential": openapi.Schema(type=openapi.TYPE_STRING),
         "explanation": openapi.Schema(type=openapi.TYPE_STRING),
     },
 )

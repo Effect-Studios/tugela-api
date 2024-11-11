@@ -67,12 +67,12 @@ def get_job_score_json(freelancer_skills, job_description):
     Respond in JSON format with two fields:
     {{
         "score": (a number between 0 and 5 indicating the suitability),
-        "Technical Skills and Competency": <score from 0-5>,
-        "Cultural Fit and Behavioral Traits": <score from 0-5>,
-        "Experience and Potential": <score from 0-5>,
+        "technical_skills_and_competency": <score from 0-5>,
+        "cultural_fit_and_behavioral_traits": <score from 0-5>,
+        "experience_and_potential": <score from 0-5>,
         "confidence_score": <average of the scores above>,
         "explanation": (a brief explanation of why this score was given)
-        "Probability of Job Success":  (percentage value based on confidence_score)
+        "probability_of_job_success":  (percentage value based on confidence_score)
     }}
 
     JSON Response:
