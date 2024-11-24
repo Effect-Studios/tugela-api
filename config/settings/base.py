@@ -67,6 +67,7 @@ LOCAL_APPS = [
     "apps.jobs.apps.JobsConfig",
     "apps.extras.apps.ExtrasConfig",
     "apps.notifications.apps.NotificationsConfig",
+    "apps.recommendations.apps.RecommendationsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -300,3 +301,4 @@ XRP_LIVE = env.bool("XRP_LIVE", default=False)
 XRP_MAIN_ACC = env("XRP_MAIN_ACC", default="")
 XRP_MAIN_SEED = env("XRP_MAIN_SEED", default="")
 XRP_SOURCE_TAG = env.int("XRP_SOURCE_TAG", default=54576093)
+OPEN_AI_KEY = env("OPEN_AI_KEY", default="")
